@@ -70,18 +70,11 @@ public:
 
     Usuario *findByUsername(string username)
     {
-        vector<Usuario *>* usuarios = bd->getUsuarios();
+        vector<Usuario *> *usuarios = bd->getUsuarios();
         auto it = find_if(usuarios->begin(), usuarios->end(), [username](Usuario *usuario)
                           { return usuario->getUsername() == username; });
 
-        if (it != usuarios->end())
-        {
-            return *it;
-        }
-        else
-        {
-            return nullptr;
-        }
+        return it != usuarios->end() ? *it : nullptr;
     };
 
     Usuario *getLoggedUser()
