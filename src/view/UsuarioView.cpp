@@ -2,117 +2,144 @@
 
 #include <iostream>
 #include "../controller/UsuarioController.cpp"
-#include "../utils/Utils.cpp"
+#include "../model/Usuario.cpp"
+#include "../Utils/Utils.cpp"
+#include "./TareaView.cpp"
 using namespace std;
 
 class UsuarioView
 {
 private:
     UsuarioController usuarioController;
+    TareaView tareaView;
     string username;
     string password;
     string nombre;
 
 public:
-    UsuarioView(){};
+    UsuarioView();
+    void clear();
+    void showLogin();
+    void showRegister();
+    void showMenu();
+    void showMenuDashBoard();
+};
 
-    void clear()
-    {
-        username = "";
-        password = "";
-        nombre = "";
-    }
+UsuarioView::UsuarioView() {}
 
-    void showLogin()
+void UsuarioView::clear()
+{
+    username = "";
+    password = "";
+    nombre = "";
+}
+
+void UsuarioView::showLogin()
+{
+    cout << "inicio de sesión" << endl;
+    cout << "Usuario: ";
+    cin >> username;
+    cout << "Contraseña: ";
+    cin >> password;
+}
+
+void UsuarioView::showRegister()
+{
+    cout << "Registro:" << endl;
+    do
     {
-        cout << "inicio de sesión" << endl;
-        cout << "Usuario: ";
+        cout << "Ingrese el nombre de usuario: ";
         cin >> username;
-        cout << "Contraseña: ";
+    } while (username.empty());
+    username = Utils::toLowerCase(username);
+
+    do
+    {
+        cout << "Ingrese la contraseña: ";
         cin >> password;
-    };
+    } while (password.empty());
 
-    void showRegister()
+    do
     {
-        cout << "Registro:" << endl;
-        do
-        {
-            cout << "Ingrese el nombre de usuario: ";
-            cin >> username;
-        } while (username.empty());
-        username = Utils::toLowerCase(username);
+        cout << "Ingrese su nombre: ";
+        nombre = Utils::getLine(nombre);
+    } while (nombre.empty());
+}
 
-        do
-        {
-            cout << "Ingrese la contraseña: ";
-            cin >> password;
-        } while (password.empty());
+void UsuarioView::showMenu()
+{
+    int option = 0;
 
-        do
-        {
-            cout << "Ingrese su nombre: ";
-            nombre = Utils::getLine(nombre);
-        } while (nombre.empty());
-    };
-
-    void showMenu()
+    do
     {
-        int option = 0;
+        clear();
+        cout << "1. Iniciar sesión" << endl;
+        cout << "2. Registrarse" << endl;
+        cout << "3. Salir" << endl;
+        cout << "Ingrese una opción: ";
+        cin >> option;
+        Utils::clearScreen();
 
-        do
+        switch (option)
         {
-            clear();
-            cout << "1. Iniciar sesión" << endl;
-            cout << "2. Registrarse" << endl;
-            cout << "3. Salir" << endl;
-            cout << "Ingrese una opción: ";
-            cin >> option;
-            Utils::clearScreen();
-
-            switch (option)
+        case 1:
+            showLogin();
+            if (usuarioController.login(username, password))
             {
-            case 1:
-                showLogin();
-                if (usuarioController.login(username, password))
-                {
-                    showMenuDashBoard();
-                }
-                else
-                {
-                    cout << "Usuario o contraseña incorrectos" << endl;
-                }
-                break;
-
-            case 2:
-                showRegister();
-                if (usuarioController.save(username, password, nombre) != nullptr)
-                {
-                    cout << "Usuario registrado correctamente" << endl;
-                }
-                else
-                {
-                    cout << "El usuario ya existe" << endl;
-                }
-                break;
-
-            case 3:
-                cout << "Saliendo..." << endl;
-                usuarioController.logout();
-                break;
-            default:
-                cout << "Opción inválida" << endl;
-                break;
+                showMenuDashBoard();
             }
-        } while (option != 3);
-    };
+            else
+            {
+                cout << "Usuario o contraseña incorrectos" << endl;
+            }
+            break;
 
-    void showMenuDashBoard()
+        case 2:
+            showRegister();
+            if (usuarioController.save(username, password, nombre) != nullptr)
+            {
+                cout << "Usuario registrado correctamente" << endl;
+            }
+            else
+            {
+                cout << "El usuario ya existe" << endl;
+            }
+            break;
+        default:
+            cout << "Opción inválida" << endl;
+            break;
+        }
+    } while (option != 3);
+}
+
+void UsuarioView::showMenuDashBoard()
+{
+    int opcion = 0;
+    Utils::clearScreen();
+    do
     {
         cout << "-------------------------------------------------" << endl;
         cout << "Bienvenido " << usuarioController.getLoggedUser()->getResponsable()->getNombre() << endl;
-        cout << "1. Ver mis datos" << endl;
-        cout << "2. Actualizar mis datos" << endl;
+        cout << "1. Tareas" << endl;
         cout << "3. Salir" << endl;
         cout << "-------------------------------------------------" << endl;
-    }
-};
+
+        cout << "Ingrese una opción: ";
+        cin >> opcion;
+
+        switch (opcion)
+        {
+        case 1:
+            tareaView.menuTarea();
+            break;
+        case 3:
+            cout << "Saliendo.." << endl;
+            usuarioController.logout();
+            break;
+        default:
+            cout << "Opción inválida" << endl;
+            break;
+        }
+
+    } while (opcion != 3);
+}

@@ -1,4 +1,5 @@
 #pragma once
+
 #include <iostream>
 #include <regex>
 #include <limits>
@@ -10,8 +11,8 @@ public:
     Utils();
     static string toLowerCase(string &text);
     static bool isDate(string &date);
-    static auto getLine(string &line);
-    static auto getLine(int &line);
+    static string getLine(string &line);
+    static int getLine(int &line);
     static auto cinIgnore();
     static void clearScreen();
 };
@@ -42,14 +43,14 @@ auto Utils::cinIgnore()
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
 }
 
-auto Utils::getLine(string &line)
+string Utils::getLine(string &line)
 {
     cinIgnore();
     getline(cin, line);
     return line;
 }
 
-auto Utils::getLine(int &line)
+int Utils::getLine(int &line)
 {
     cinIgnore();
     cin >> line;

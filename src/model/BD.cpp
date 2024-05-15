@@ -9,42 +9,55 @@ class BD
 {
 private:
     static BD *instance;
-    BD(){};
-
-    vector<Usuario *> *usuarios = new vector<Usuario *>();
+    vector<Usuario *> *usuarios;
     Usuario *usuario;
+
+    BD();
 
 public:
     // No copiable
     BD(BD &bd) = delete;
 
     // No asignable
-    void operator=(const BD &) = delete;
+    void operator = (const BD &) = delete;
 
     // Obtener instancia
-    static BD *getInstance()
-    {
-        if (instance == nullptr)
-        {
-            instance = new BD();
-        }
-        return instance;
-    };
+    static BD *getInstance();
 
-    vector<Usuario *>* getUsuarios()
-    {
-        return this->usuarios;
-    };
-
-    Usuario *getUsuario()
-    {
-        return this->usuario;
-    };
-
-    void setUsuario(Usuario *usuario)
-    {
-        this->usuario = usuario;
-    };
+    vector<Usuario *> *getUsuarios();
+    Usuario *getUsuario();
+    void setUsuario(Usuario *usuario);
 };
 
 BD *BD::instance = nullptr;
+
+BD::BD()
+{
+    usuarios = new vector<Usuario *>();
+    usuarios->push_back(new Usuario("admin", "admin", new Responsable("Daniel")));
+    usuario = nullptr;
+}
+
+BD *BD::getInstance()
+{
+    if (instance == nullptr)
+    {
+        instance = new BD();
+    }
+    return instance;
+}
+
+vector<Usuario *> *BD::getUsuarios()
+{
+    return usuarios;
+}
+
+Usuario *BD::getUsuario()
+{
+    return usuario;
+}
+
+void BD::setUsuario(Usuario *usuario)
+{
+    this->usuario = usuario;
+}
