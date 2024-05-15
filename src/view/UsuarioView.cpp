@@ -5,6 +5,8 @@
 #include "../model/Usuario.cpp"
 #include "../Utils/Utils.cpp"
 #include "./TareaView.cpp"
+#include "./ProyectoView.cpp"
+
 using namespace std;
 
 class UsuarioView
@@ -12,6 +14,7 @@ class UsuarioView
 private:
     UsuarioController usuarioController;
     TareaView tareaView;
+    ProyectoView proyectoView;
     string username;
     string password;
     string nombre;
@@ -121,6 +124,7 @@ void UsuarioView::showMenuDashBoard()
         cout << "-------------------------------------------------" << endl;
         cout << "Bienvenido " << usuarioController.getLoggedUser()->getResponsable()->getNombre() << endl;
         cout << "1. Tareas" << endl;
+        cout << "2. Proyectos" << endl;
         cout << "3. Salir" << endl;
         cout << "-------------------------------------------------" << endl;
 
@@ -131,6 +135,9 @@ void UsuarioView::showMenuDashBoard()
         {
         case 1:
             tareaView.menuTarea();
+            break;
+        case 2:
+            proyectoView.showMenuProyecto();
             break;
         case 3:
             cout << "Saliendo.." << endl;

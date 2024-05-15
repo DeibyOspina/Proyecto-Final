@@ -42,9 +42,9 @@ void TareaView::menuUploadCSV()
             showTarea(tareas);
             break;
         }
-        catch (const std::exception &e)
+        catch (const exception &e)
         {
-            std::cerr << e.what() << '\n';
+            cerr << e.what() << '\n';
         }
     } while (true);
 }
@@ -64,9 +64,9 @@ void TareaView::menuExportCSV()
             cout << "Tareas exportadas exitosamente" << endl;
             break;
         }
-        catch (const std::exception &e)
+        catch (const exception &e)
         {
-            std::cerr << e.what() << '\n';
+            cerr << e.what() << '\n';
         }
     } while (true);
 }
@@ -145,9 +145,9 @@ void TareaView::menuTarea()
                 break;
             }
         }
-        catch (const std::exception &e)
+        catch (const exception &e)
         {
-            std::cerr << e.what() << '\n';
+            cerr << e.what() << '\n';
         }
     } while (opcion != 3);
 };

@@ -38,22 +38,34 @@ bool Utils::isDate(string &date)
     return regex_match(date, match, dateRegex);
 }
 
-auto Utils::cinIgnore()
-{
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-}
-
 string Utils::getLine(string &line)
 {
-    cinIgnore();
-    getline(cin, line);
-    return line;
+    try
+    {
+        if (getline(cin, line))
+        {
+            if (cin.rdbuf()->in_avail() > 1)
+            {
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            }
+            return line;
+        }
+        else
+        {
+            cerr << "Error: Fallo al leer la línea." << endl;
+        }
+    }
+    catch (const exception &e)
+    {
+        cerr << e.what() << endl;
+    }
+    return "";
 }
 
 int Utils::getLine(int &line)
 {
-    cinIgnore();
     cin >> line;
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
     return line;
 }
 
