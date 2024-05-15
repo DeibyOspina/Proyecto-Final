@@ -1,4 +1,5 @@
 #pragma once
+
 #include <iostream>
 #include <regex>
 #include <limits>
@@ -10,8 +11,8 @@ public:
     Utils();
     static string toLowerCase(string &text);
     static bool isDate(string &date);
-    static auto getLine(string &line);
-    static auto getLine(int &line);
+    static string getLine(string &line);
+    static int getLine(int &line);
     static auto cinIgnore();
     static void clearScreen();
 };
@@ -37,22 +38,34 @@ bool Utils::isDate(string &date)
     return regex_match(date, match, dateRegex);
 }
 
-auto Utils::cinIgnore()
+string Utils::getLine(string &line)
 {
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    try
+    {
+        if (getline(cin, line))
+        {
+            if (cin.rdbuf()->in_avail() > 1)
+            {
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            }
+            return line;
+        }
+        else
+        {
+            cerr << "Error: Fallo al leer la línea." << endl;
+        }
+    }
+    catch (const exception &e)
+    {
+        cerr << e.what() << endl;
+    }
+    return "";
 }
 
-auto Utils::getLine(string &line)
+int Utils::getLine(int &line)
 {
-    cinIgnore();
-    getline(cin, line);
-    return line;
-}
-
-auto Utils::getLine(int &line)
-{
-    cinIgnore();
     cin >> line;
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
     return line;
 }
 
