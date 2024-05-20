@@ -11,6 +11,7 @@ class BD
 {
 private:
     static BD *instance;
+
     vector<Usuario *> *usuarios;
     set<Proyecto *>* proyectos;
     Usuario *usuario;

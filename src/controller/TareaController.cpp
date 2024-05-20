@@ -20,6 +20,8 @@ public:
     set<Tarea *> createTareaToCSV(string pathCSV);
     bool validHeader(vector<string> header);
     void exportTareasToCSV(set<Tarea *> tareas, string pathCSV);
+    Tarea *findTareaByNombre(set<Tarea *> tareas, string nombre);
+    Tarea *findTareaByNombre(string nombre);
 };
 TareaController::TareaController()
 {
@@ -92,7 +94,21 @@ void TareaController::exportTareasToCSV(set<Tarea *> tareas, string pathCSV)
     data.push_back(header);
     for_each(tareas.begin(), tareas.end(), [&data](Tarea *tarea)
              {
-        vector<string> row = {tarea->getNombre(), tarea->getResponsable()->getNombre(), tarea->getFechaLimite(), tarea->getEstado(), tarea->getPrioridad(), tarea->getComentario()};
+        vector<string> row = {tarea->getNombre(), tarea->getResponsable()->getNombre(), 
+        tarea->getFechaLimite(), tarea->getEstado(), tarea->getPrioridad(), tarea->getComentario()};
         data.push_back(row); });
     fileController.writeCSV(data, '\n', ";");
+}
+
+Tarea *TareaController::findTareaByNombre(set<Tarea *> tareas, string nombre)
+{
+    auto it = find_if(tareas.begin(), tareas.end(), [nombre](Tarea *tarea)
+                      { return tarea->getNombre() == nombre; });
+    return it != tareas.end() ? *it : nullptr;
+}
+
+Tarea *TareaController::findTareaByNombre(string nombre)
+{
+    set<Tarea *> tareas = bd->getUsuario()->getResponsable()->getTareas();
+    return findTareaByNombre(tareas, nombre);
 }

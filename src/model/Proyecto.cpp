@@ -1,5 +1,5 @@
 #pragma once
-
+#include <list>
 #include <iostream>
 using namespace std;
 
@@ -10,6 +10,7 @@ private:
     string descripcion;
     string propietario;
     string estado;
+    list<Nota *> notas;
 
 public:
     Proyecto(string nombre, string propietario, string descripcion, string estado);
@@ -26,6 +27,9 @@ public:
 
     string getDescripcion() const;
     void setDescripcion(string descripcion);
+
+    list<Nota *> getNotas() const;
+    void addNota(Nota *nota);
 };
 
 Proyecto::Proyecto(string nombre, string descripcion, string propietario, string estado)
@@ -81,4 +85,14 @@ string Proyecto::getDescripcion() const
 void Proyecto::setDescripcion(string descripcion)
 {
     this->descripcion = descripcion;
+}
+
+void Proyecto::addNota(Nota *nota)
+{
+    notas.push_back(nota);
+}
+
+list<Nota *> Proyecto::getNotas() const
+{
+    return notas;
 }

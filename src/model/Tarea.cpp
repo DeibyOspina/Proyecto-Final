@@ -13,6 +13,7 @@ class Responsable;
 class Tarea
 {
 private:
+    int id;
     string nombre;
     string fechaLimite;
     Responsable *responsable;

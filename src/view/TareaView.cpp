@@ -23,6 +23,7 @@ public:
     void showTarea(set<Tarea *> tareas);
     void menuExportCSV();
     void menuTarea();
+    void menuNotas();
 };
 TareaView::TareaView() {}
 

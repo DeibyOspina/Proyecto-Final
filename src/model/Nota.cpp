@@ -28,6 +28,8 @@ public:
 
     Usuario *getAutor() const;
     void setAutor(Usuario *autor);
+
+    queue<Reaccion *> getReacciones() const;
 };
 Nota::Nota() {}
 
@@ -66,4 +68,9 @@ Usuario *Nota::getAutor() const
 void Nota::setAutor(Usuario *autor)
 {
     this->autor = autor;
+}
+
+queue<Reaccion *> Nota::getReacciones() const
+{
+    return reacciones;
 }

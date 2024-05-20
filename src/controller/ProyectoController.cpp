@@ -1,6 +1,7 @@
 #include <iostream>
-#include "../model/BD.cpp"
 #include <algorithm>
+
+#include "../model/BD.cpp"
 using namespace std;
 
 class ProyectoController

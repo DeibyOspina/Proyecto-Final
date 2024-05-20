@@ -2,12 +2,14 @@
 #include <iomanip>
 #include <string>
 #include "../Utils/Utils.cpp"
+#include "./NotasView.cpp"
 #include "../controller/ProyectoController.cpp"
 using namespace std;
 
 class ProyectoView
 {
 private:
+    NotasView notasView;
     ProyectoController proyectoController;
     string nombre;
     string descripcion;
@@ -19,6 +21,7 @@ public:
     void showCreateProyecto();
     void showEditProyecto();
     void showProyectos();
+    void menuAddNotaProyecto();
 };
 
 ProyectoView::ProyectoView()
@@ -137,5 +140,20 @@ void ProyectoView::showProyectos()
              << setw(15) << left << proyecto->getPropietario()
              << setw(15) << left << proyecto->getDescripcion()
              << endl;
+    }
+}
+
+
+void ProyectoView::menuAddNotaProyecto()
+{
+    showProyectos();
+    cin.ignore();
+    cout << "Seleccione un proyecto: ";
+    getline(cin, nombre);
+
+    auto proyecto = proyectoController.findProyectoByNombre(nombre);
+    if (proyecto != nullptr)
+    {
+        notasView.showFormNotas(proyecto);
     }
 }
