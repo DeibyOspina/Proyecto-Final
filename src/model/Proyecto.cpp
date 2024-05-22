@@ -9,10 +9,12 @@ class Tarea;
 class Proyecto
 {
 private:
+    
     string nombre;
     string descripcion;
     string propietario;
     string estado;
+
     list<Tarea *> *tareas;
     list<Nota *> notas;
 
@@ -40,8 +42,8 @@ Proyecto::Proyecto(string nombre, string descripcion, string propietario, string
 {
     this->nombre = nombre;
     this->propietario = propietario;
-    this->estado = estado;
     this->descripcion = descripcion;
+    this->estado = estado;
 }
 
 Proyecto::Proyecto(string nombre, string descripcion, string propietario)

@@ -16,10 +16,13 @@ private:
 public:
     Usuario(string username, string password, Responsable *responsable);
     Usuario(string username, string password);
+
     string getUsername();
     void setUsername(string username);
+
     string getPassword();
     void setPassword(string password);
+    
     Responsable *getResponsable();
     void setResponsable(Responsable *responsable);
 };

@@ -3,7 +3,7 @@
 #include <iostream>
 #include <set>
 #include <vector>
-#include "./responsable.cpp"
+#include "./Responsable.cpp"
 #include "./Nota.cpp"
 using namespace std;
 
@@ -13,12 +13,14 @@ class Tarea
 {
 private:
     int id;
+    
     string nombre;
     string fechaLimite;
-    set<Responsable *> *responsables;
     string estado;
     string prioridad;
     string comentario;
+    
+    set<Responsable *> *responsables;
     set<Nota *> notas;
 
 public:

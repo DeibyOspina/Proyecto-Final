@@ -11,8 +11,10 @@ class Usuario;
 class Nota
 {
 private:
+    
     string titulo;
     string descripcion;
+
     Usuario *autor;
     queue<Reaccion *> reacciones;
 

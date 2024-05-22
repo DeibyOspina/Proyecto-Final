@@ -15,10 +15,12 @@ private:
 
 public:
     Responsable(string nombre);
-    void setNombre(string nombre);
+    
     set<Tarea*> getTareas();
     void setTareas(set<Tarea*> tareas);
     void addTarea(Tarea* tarea);
+
+    void setNombre(string nombre);
     string getNombre();
 };
 
