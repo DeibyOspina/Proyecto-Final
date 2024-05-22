@@ -1,7 +1,10 @@
 #pragma once
 #include <list>
 #include <iostream>
+#include "./Tarea.cpp"
 using namespace std;
+
+class Tarea;
 
 class Proyecto
 {
@@ -10,6 +13,7 @@ private:
     string descripcion;
     string propietario;
     string estado;
+    list<Tarea *> *tareas;
     list<Nota *> notas;
 
 public:

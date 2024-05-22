@@ -3,12 +3,11 @@
 #include <iostream>
 #include <set>
 #include <vector>
-#include "./Responsable.cpp"
-#include "./Nota.cpp" 
+#include "./responsable.cpp"
+#include "./Nota.cpp"
 using namespace std;
 
-
-class Responsable;
+class responsables;
 
 class Tarea
 {
@@ -16,14 +15,14 @@ private:
     int id;
     string nombre;
     string fechaLimite;
-    Responsable *responsable;
+    set<Responsable *> *responsables;
     string estado;
     string prioridad;
     string comentario;
     set<Nota *> notas;
 
 public:
-    Tarea(string nombre, string fechaLimite, Responsable *responsable, string estado, string prioridad, string comentario);
+    Tarea(string nombre, string fechaLimite, set<Responsable *> *responsables, string estado, string prioridad, string comentario);
 
     string getNombre() const;
     void setNombre(const string &nombre);
@@ -31,8 +30,9 @@ public:
     string getFechaLimite() const;
     void setFechaLimite(const string &fechaLimite);
 
-    Responsable *getResponsable() const;
-    void setResponsable(Responsable *responsable);
+    set<Responsable *> *getResponsable() const;
+    void setResponsable(set<Responsable *> *responsables);
+    void addResponsable(Responsable *responsable);
 
     string getEstado() const;
     void setEstado(const string &Estado);
@@ -51,11 +51,11 @@ public:
     vector<string> toVector();
 };
 
-Tarea::Tarea(string nombre, string fechaLimite, Responsable *responsable, string estado, string prioridad, string comentario)
+Tarea::Tarea(string nombre, string fechaLimite, set<Responsable *> *responsables, string estado, string prioridad, string comentario)
 {
     this->nombre = nombre;
     this->fechaLimite = fechaLimite;
-    this->responsable = responsable;
+    this->responsables = responsables;
     this->estado = estado;
     this->prioridad = prioridad;
     this->comentario = comentario;
@@ -81,14 +81,19 @@ void Tarea::setFechaLimite(const string &fechaLimite)
     this->fechaLimite = fechaLimite;
 }
 
-Responsable *Tarea::getResponsable() const
+set<Responsable *> *Tarea::getResponsable() const
 {
-    return responsable;
+    return responsables;
 }
 
-void Tarea::setResponsable(Responsable *responsable)
+void Tarea::setResponsable(set<Responsable *> *responsables)
 {
-    this->responsable = responsable;
+    this->responsables = responsables;
+}
+
+void Tarea::addResponsable(Responsable *responsable)
+{
+    this->responsables->insert(responsable);
 }
 
 string Tarea::getEstado() const
