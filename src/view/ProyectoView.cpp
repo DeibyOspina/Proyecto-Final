@@ -1,7 +1,7 @@
 #include <iostream>
 #include <iomanip>
 #include <string>
-#include "../Utils/Utils.cpp"
+#include "../utils/utils.cpp"
 #include "./NotasView.cpp"
 #include "../controller/ProyectoController.cpp"
 using namespace std;
@@ -14,13 +14,15 @@ private:
     string nombre;
     string descripcion;
     string propietario;
+    string estado;
 
 public:
     ProyectoView();
     void showMenuProyecto();
     void showCreateProyecto();
     void showEditProyecto();
-    void showProyectos();
+    void showMenuListProyecto();
+    void showProyectos(vector<Proyecto *> *proyectos);
     void menuAddNotaProyecto();
 };
 
@@ -52,13 +54,16 @@ void ProyectoView::showMenuProyecto()
             showEditProyecto();
             break;
         case 3:
-            showProyectos();
+            showMenuListProyecto();
+            break;
+        case 4:
             break;
         default:
             cout << "Opcion no valida" << endl;
             break;
         }
     } while (opcion != 4);
+    Utils::clearScreen();
 }
 
 void ProyectoView::showCreateProyecto()
@@ -89,23 +94,55 @@ void ProyectoView::showCreateProyecto()
             cerr << e.what() << '\n';
         }
     } while (true);
+    Utils::clearScreen();
 }
 
 void ProyectoView::showEditProyecto()
 {
-    showProyectos();
+    cout << "------- Proyectos Disponibles ---------" << endl;
+    showProyectos(proyectoController.listProyectos());
+
     cin.ignore();
     cout << "Seleccione un proyecto: ";
     getline(cin, nombre);
 
     auto proyecto = proyectoController.findProyectoByNombre(nombre);
-    if (proyecto != nullptr)
+    if (proyecto == nullptr)
     {
-        do
+        cout << "Proyecto no encontrado" << endl;
+        return;
+    }
+
+    int opcion = 0;
+    do
+    {
+        cout << "----- Proyecto seleccionado: " << proyecto->getNombre() << endl;
+        cout << "1. Cambiar Estado Proyecto " << endl;
+        cout << "2. Editar Datos Proyecto" << endl;
+        cout << "3. Salir" << endl;
+        cout << "Ingrese una opcion: ";
+        cin >> opcion;
+        Utils::clearScreen();
+
+        switch (opcion)
         {
+        case 1:
+            EstadosProyecto::showEstados();
+            cout << "Seleccione un estado: ";
+            cin >> opcion;
+            estado = EstadosProyecto::selectEstado(opcion);
+            if (estado.empty())
+            {
+                cout << "Estado no valido" << endl;
+                break;
+            }
+            proyecto->setEstado(estado);
+            cout << "Estado cambiado" << endl;
+            break;
+        case 2:
             try
             {
-                cout << "------- Editar Proyecto ---------" << endl;
+                cout << "------- Editar Datos Proyecto ---------" << endl;
                 cout << "Descripcion: ";
                 descripcion = Utils::getLine(descripcion);
 
@@ -120,17 +157,26 @@ void ProyectoView::showEditProyecto()
             }
             catch (const exception &e)
             {
+                opcion = 2;
                 cerr << e.what() << '\n';
             }
-        } while (true);
-    }
+            break;
+
+        default:
+            cout << "Opcion no valida" << endl;
+            break;
+        }
+
+    } while (opcion != 3);
+    Utils::clearScreen();
 }
 
-void ProyectoView::showProyectos()
+void ProyectoView::showProyectos(vector<Proyecto *> *proyectos)
 {
-    set<Proyecto *> *proyectos = proyectoController.listProyectos();
     cout << setw(15) << left << "Nombre"
          << setw(15) << left << "Propietario"
+         << setw(30) << left << "Fecha Creacion"
+         << setw(15) << left << "Estado"
          << setw(15) << left << "Descripcion"
          << endl;
 
@@ -138,15 +184,49 @@ void ProyectoView::showProyectos()
     {
         cout << setw(15) << left << proyecto->getNombre()
              << setw(15) << left << proyecto->getPropietario()
+             << setw(30) << left << proyecto->getFecha()
+             << setw(15) << left << proyecto->getEstado()
              << setw(15) << left << proyecto->getDescripcion()
              << endl;
     }
 }
 
+void ProyectoView::showMenuListProyecto()
+{
+    int opcion;
+    bool sorted = true;
+    do
+    {
+        cout << "1. Mostrar proyectos" << endl;
+        cout << "2. Mostrar proyectos ordenados por fecha de creacion" << endl;
+        cout << "3. Salir" << endl;
+        cout << "Ingrese una opcion: ";
+        cin >> opcion;
+        Utils::clearScreen();
+
+        switch (opcion)
+        {
+        case 1:
+            showProyectos(proyectoController.listProyectos());
+            break;
+        case 2:
+            showProyectos(proyectoController.sortProyectosByFecha(sorted));
+            sorted = !sorted;
+            break;
+        case 3:
+            break;
+        default:
+            cout << "Opcion no valida" << endl;
+            break;
+        }
+
+    } while (opcion != 3);
+    Utils::clearScreen();
+}
 
 void ProyectoView::menuAddNotaProyecto()
 {
-    showProyectos();
+    showProyectos(proyectoController.listProyectos());
     cin.ignore();
     cout << "Seleccione un proyecto: ";
     getline(cin, nombre);

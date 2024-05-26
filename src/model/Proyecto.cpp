@@ -9,11 +9,11 @@ class Tarea;
 class Proyecto
 {
 private:
-    
     string nombre;
     string descripcion;
     string propietario;
     string estado;
+    string fecha;
 
     list<Tarea *> *tareas;
     list<Nota *> notas;
@@ -33,6 +33,9 @@ public:
 
     string getDescripcion() const;
     void setDescripcion(string descripcion);
+
+    string getFecha() const;
+    void setFecha(string fecha);
 
     list<Nota *> getNotas() const;
     void addNota(Nota *nota);
@@ -91,6 +94,16 @@ string Proyecto::getDescripcion() const
 void Proyecto::setDescripcion(string descripcion)
 {
     this->descripcion = descripcion;
+}
+
+string Proyecto::getFecha() const
+{
+    return fecha;
+}
+
+void Proyecto::setFecha(string fecha)
+{
+    this->fecha = fecha;
 }
 
 void Proyecto::addNota(Nota *nota)

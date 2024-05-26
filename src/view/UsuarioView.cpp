@@ -3,7 +3,7 @@
 #include <iostream>
 #include "../controller/UsuarioController.cpp"
 #include "../model/Usuario.cpp"
-#include "../Utils/Utils.cpp"
+#include "../utils/utils.cpp"
 #include "./TareaView.cpp"
 #include "./ProyectoView.cpp"
 

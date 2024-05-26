@@ -7,24 +7,25 @@
 #include "./Nota.cpp"
 using namespace std;
 
-class responsables;
+class Responsable;
 
 class Tarea
 {
 private:
     int id;
-    
+
     string nombre;
     string fechaLimite;
     string estado;
     string prioridad;
     string comentario;
-    
+
     set<Responsable *> *responsables;
     set<Nota *> notas;
 
 public:
     Tarea(string nombre, string fechaLimite, set<Responsable *> *responsables, string estado, string prioridad, string comentario);
+    Tarea(string nombre, string fechaLimite, Responsable *responsable, string estado, string prioridad, string comentario);
 
     string getNombre() const;
     void setNombre(const string &nombre);
@@ -52,6 +53,16 @@ public:
 
     vector<string> toVector();
 };
+
+Tarea::Tarea(string nombre, string fechaLimite, Responsable *responsable, string estado, string prioridad, string comentario)
+{
+    this->nombre = nombre;
+    this->fechaLimite = fechaLimite;
+    this->responsables->insert(responsable);
+    this->estado = estado;
+    this->prioridad = prioridad;
+    this->comentario = comentario;
+}
 
 Tarea::Tarea(string nombre, string fechaLimite, set<Responsable *> *responsables, string estado, string prioridad, string comentario)
 {

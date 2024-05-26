@@ -13,7 +13,7 @@ private:
     static BD *instance;
 
     vector<Usuario *> *usuarios;
-    set<Proyecto *>* proyectos;
+    vector<Proyecto *>* proyectos;
     Usuario *usuario;
 
     BD();
@@ -33,7 +33,7 @@ public:
     Usuario *getUsuario();
     void setUsuario(Usuario *usuario);
 
-    set<Proyecto *> *getProyectos();
+    vector<Proyecto *> *getProyectos();
 };
 
 BD *BD::instance = nullptr;
@@ -43,7 +43,7 @@ BD::BD()
     usuarios = new vector<Usuario *>();
     usuarios->push_back(new Usuario("admin", "admin", new Responsable("Daniel")));
     usuario = nullptr;
-    proyectos = new set<Proyecto *>();
+    proyectos = new vector<Proyecto *>();
 }
 
 BD::~BD()
@@ -85,7 +85,7 @@ void BD::setUsuario(Usuario *usuario)
     this->usuario = usuario;
 }
 
-set<Proyecto *> *BD::getProyectos()
+vector<Proyecto *> *BD::getProyectos()
 {
     return proyectos;
 }

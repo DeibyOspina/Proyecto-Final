@@ -3,6 +3,10 @@
 #include <iostream>
 #include <regex>
 #include <limits>
+#include <iomanip>
+#include <ctime>
+#include <sstream>
+
 using namespace std;
 
 class Utils
@@ -15,6 +19,7 @@ public:
     static int getLine(int &line);
     static auto cinIgnore();
     static void clearScreen();
+    static string getCurrentDate();
 };
 
 Utils::Utils()
@@ -72,4 +77,13 @@ int Utils::getLine(int &line)
 void Utils::clearScreen()
 {
     cout << "\033[2J\033[1;1H";
+}
+
+string Utils::getCurrentDate()
+{
+    auto t = time(nullptr);
+    auto tm = *localtime(&t);
+    ostringstream oss;
+    oss << put_time(&tm, "%d/%m/%Y %H:%M:%S");
+    return oss.str();
 }
