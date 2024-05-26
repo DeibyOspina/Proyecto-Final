@@ -3,7 +3,7 @@
 #include <iostream>
 #include <iomanip>
 
-#include "../Utils/Utils.cpp"
+#include "../utils/utils.cpp"
 #include "../model/Tarea.cpp"
 #include "../controller/TareaController.cpp"
 #include "../controller/UsuarioController.cpp"
@@ -76,14 +76,14 @@ void TareaView::showTarea(Tarea *tarea)
 {
     cout << setw(15) << left << "Nombre"
          << setw(15) << left << "Fecha Limite"
-         << setw(15) << left << "Responsable"
+         //<< setw(15) << left << "Responsable"
          << setw(15) << left << "Estado"
          << setw(15) << left << "Prioridad"
          << setw(15) << left << "Comentario" << endl;
 
     cout << setw(15) << left << tarea->getNombre()
          << setw(15) << left << tarea->getFechaLimite()
-         << setw(15) << left << tarea->getResponsable()->getNombre()
+         //<< setw(15) << left << tarea->getResponsable
          << setw(15) << left << tarea->getEstado()
          << setw(15) << left << tarea->getPrioridad()
          << setw(15) << left << tarea->getComentario() << endl;
@@ -93,7 +93,7 @@ void TareaView::showTarea(set<Tarea *> tareas)
 {
     cout << setw(15) << left << "Nombre"
          << setw(15) << left << "Fecha Limite"
-         << setw(15) << left << "Responsable"
+         //<< setw(15) << left << "Responsable"
          << setw(15) << left << "Estado"
          << setw(15) << left << "Prioridad"
          << setw(15) << left << "Comentario" << endl;
@@ -102,7 +102,7 @@ void TareaView::showTarea(set<Tarea *> tareas)
     {
         cout << setw(15) << left << tarea->getNombre()
              << setw(15) << left << tarea->getFechaLimite()
-             << setw(15) << left << tarea->getResponsable()->getNombre()
+             //<< setw(15) << left << tarea->getResponsable()->getNombre()
              << setw(15) << left << tarea->getEstado()
              << setw(15) << left << tarea->getPrioridad()
              << setw(15) << left << tarea->getComentario() << endl;

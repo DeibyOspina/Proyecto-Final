@@ -2,7 +2,7 @@
 
 #include <iostream>
 #include "./Usuario.cpp"
-#include "../Utils/Reacciones.cpp"
+#include "../utils/Reacciones.cpp"
 using namespace std;
 
 class Usuario;

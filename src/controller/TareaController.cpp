@@ -4,7 +4,7 @@
 #include <set>
 #include "../model/BD.cpp"
 #include "../model/Tarea.cpp"
-#include "../Utils/Utils.cpp"
+#include "../utils/utils.cpp"
 #include "./FilesController.cpp"
 #include "./ResponsableController.cpp"
 
@@ -94,7 +94,8 @@ void TareaController::exportTareasToCSV(set<Tarea *> tareas, string pathCSV)
     data.push_back(header);
     for_each(tareas.begin(), tareas.end(), [&data](Tarea *tarea)
              {
-        vector<string> row = {tarea->getNombre(), tarea->getResponsable()->getNombre(), 
+        auto it = *tarea->getResponsable()->begin();
+        vector<string> row = {tarea->getNombre(), it->getNombre() , 
         tarea->getFechaLimite(), tarea->getEstado(), tarea->getPrioridad(), tarea->getComentario()};
         data.push_back(row); });
     fileController.writeCSV(data, '\n', ";");
