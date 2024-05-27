@@ -113,3 +113,4 @@ Tarea *TareaController::findTareaByNombre(string nombre)
     set<Tarea *> tareas = bd->getUsuario()->getResponsable()->getTareas();
     return findTareaByNombre(tareas, nombre);
 }
+
