@@ -4,8 +4,8 @@
 #include "../controller/UsuarioController.cpp"
 #include "../model/Usuario.cpp"
 #include "../utils/utils.cpp"
-#include "./TareaView.cpp"
 #include "./ProyectoView.cpp"
+#include "./TareaView.cpp"
 
 using namespace std;
 

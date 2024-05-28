@@ -18,6 +18,7 @@ private:
     Usuario *autor;
     queue<Reaccion *> reacciones;
 
+
 public:
     Nota();
     Nota(string titulo, string descripcion, Usuario *autor);
@@ -32,6 +33,7 @@ public:
     void setAutor(Usuario *autor);
 
     queue<Reaccion *> getReacciones() const;
+    string convertReaccionesToString() const;
 };
 Nota::Nota() {}
 
@@ -75,4 +77,17 @@ void Nota::setAutor(Usuario *autor)
 queue<Reaccion *> Nota::getReacciones() const
 {
     return reacciones;
+}
+
+string Nota::convertReaccionesToString() const
+{
+    string reaccionesString = "";
+    queue<Reaccion *> reaccionesTmp = reacciones;
+    while (!reaccionesTmp.empty())
+    {
+        Reaccion *reaccion = reaccionesTmp.front();
+        reaccionesString += reaccion->getNombre() + " | ";
+        reaccionesTmp.pop();
+    }
+    return reaccionesString;
 }

@@ -34,6 +34,7 @@ public:
     void setUsuario(Usuario *usuario);
 
     vector<Proyecto *> *getProyectos();
+    
 };
 
 BD *BD::instance = nullptr;

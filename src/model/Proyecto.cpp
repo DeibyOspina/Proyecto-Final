@@ -15,7 +15,7 @@ private:
     string estado;
     string fecha;
 
-    list<Tarea *> *tareas;
+    list<Tarea *> tareas;
     list<Nota *> notas;
 
 public:
@@ -120,5 +120,5 @@ list<Nota *> Proyecto::getNotas() const
 
 void Proyecto::addTarea(Tarea *tarea)
 {
-    tareas->push_back(tarea);
+    tareas.push_back(tarea);
 }
