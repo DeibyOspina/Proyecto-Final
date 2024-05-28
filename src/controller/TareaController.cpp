@@ -14,16 +14,20 @@ class TareaController
 {
 private:
     BD *bd;
+    Proyecto *proyecto;
 
 public:
     TareaController();
     set<Tarea *> createTareaToCSV(string pathCSV);
-    bool validHeader(vector<string> header);
     void exportTareasToCSV(set<Tarea *> tareas, string pathCSV);
+    bool validHeader(vector<string> header);
+    
     Tarea *findTareaByNombre(set<Tarea *> tareas, string nombre);
     Tarea *findTareaByNombre(string nombre);
+
     Proyecto *crearTarea(string nombre, string fechaLimite, string estado, string prioridad, string comentario);
     void editarTarea(Tarea *tarea, string nombre, string fechaLimite, string estado, string prioridad, string comentario);
+
 };
 TareaController::TareaController()
 {
@@ -118,7 +122,6 @@ Tarea *TareaController::findTareaByNombre(string nombre)
 
 Proyecto *TareaController::crearTarea(string nombre, string fechaLimite, string estado, string prioridad, string comentario)
 {
-    Proyecto *proyecto = bd->getProyecto();
     if (proyecto == nullptr)
     {
         throw invalid_argument("No ha seleccionado ningún proyecto.");

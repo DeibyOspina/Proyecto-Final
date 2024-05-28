@@ -21,6 +21,7 @@ public:
     bool update(string username, string password, string nombre);
     Usuario *findByUsername(string username);
     Usuario *getLoggedUser();
+    Responsable* findResponsableByNombre(string nombre);
 };
 
 UsuarioController::UsuarioController()
@@ -92,4 +93,12 @@ Usuario *UsuarioController::findByUsername(string username)
 Usuario *UsuarioController::getLoggedUser()
 {
     return bd->getUsuario();
+}
+
+Responsable* UsuarioController::findResponsableByNombre(string nombre)
+{
+    vector<Usuario *> *usuarios = bd->getUsuarios();
+    auto it = find_if(usuarios->begin(), usuarios->end(), [nombre](Usuario *usuario)
+                      { return usuario->getResponsable()->getNombre() == nombre; });
+    return it != usuarios->end() ? (*it)->getResponsable() : nullptr;
 }

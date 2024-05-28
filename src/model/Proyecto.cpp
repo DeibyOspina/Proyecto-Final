@@ -39,6 +39,8 @@ public:
 
     list<Nota *> getNotas() const;
     void addNota(Nota *nota);
+
+    void addTarea(Tarea *tarea);
 };
 
 Proyecto::Proyecto(string nombre, string descripcion, string propietario, string estado)
@@ -114,4 +116,9 @@ void Proyecto::addNota(Nota *nota)
 list<Nota *> Proyecto::getNotas() const
 {
     return notas;
+}
+
+void Proyecto::addTarea(Tarea *tarea)
+{
+    tareas->push_back(tarea);
 }

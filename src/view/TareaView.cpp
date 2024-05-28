@@ -155,7 +155,7 @@ void TareaView::menuTarea()
                     string nombreResponsable;
                     cout << "Ingrese el nombre del responsable: ";
                     getline(cin, nombreResponsable);
-                    Responsable *responsable = usuarioController.getResponsable(nombreResponsable);
+                    Responsable *responsable = usuarioController.findResponsableByNombre(nombreResponsable);
                     if (responsable)
                     {
                         showTarea(responsable->getTareas());

@@ -142,12 +142,14 @@ void ProyectoView::showEditProyecto()
         case 2:
             try
             {
+                cin.ignore();
                 cout << "------- Editar Datos Proyecto ---------" << endl;
                 cout << "Descripcion: ";
-                descripcion = Utils::getLine(descripcion);
+                getline(cin, descripcion);
 
+                cin.ignore();
                 cout << "Propietario: ";
-                propietario = Utils::getLine(propietario);
+                getline(cin, propietario);
 
                 if (proyectoController.editProyecto(proyecto, descripcion, propietario))
                 {
