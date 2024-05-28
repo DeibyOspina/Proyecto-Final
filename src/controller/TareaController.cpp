@@ -5,6 +5,8 @@
 #include "../model/BD.cpp"
 #include "../model/Tarea.cpp"
 #include "../utils/utils.cpp"
+#include "../utils/EstadosTarea.cpp"
+#include "../utils/PrioridadesTarea.cpp"
 #include "./FilesController.cpp"
 #include "./ResponsableController.cpp"
 
@@ -21,17 +23,24 @@ public:
     set<Tarea *> createTareaToCSV(string pathCSV);
     void exportTareasToCSV(set<Tarea *> tareas, string pathCSV);
     bool validHeader(vector<string> header);
-    
+
     Tarea *findTareaByNombre(set<Tarea *> tareas, string nombre);
     Tarea *findTareaByNombre(string nombre);
 
     Proyecto *crearTarea(string nombre, string fechaLimite, string estado, string prioridad, string comentario);
     void editarTarea(Tarea *tarea, string nombre, string fechaLimite, string estado, string prioridad, string comentario);
 
+    void setProyecto(Proyecto *proyecto);
 };
+
 TareaController::TareaController()
 {
     bd = BD::getInstance();
+}
+
+void TareaController::setProyecto(Proyecto *proyecto)
+{
+    this->proyecto = proyecto;
 }
 
 set<Tarea *> TareaController::createTareaToCSV(string pathCSV)

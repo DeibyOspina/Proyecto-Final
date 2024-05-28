@@ -15,8 +15,34 @@ private:
 
 public:
     Reaccion();
+
+    string getNombre() const;
+    void setNombre(string nombre);
+
+    Usuario *getAutor() const;
+    void setAutor(Usuario *autor);
 };
 
 Reaccion::Reaccion()
 {
+}
+
+string Reaccion::getNombre() const
+{
+    return nombre;
+}
+
+void Reaccion::setNombre(string nombre)
+{
+    this->nombre = nombre;
+}
+
+Usuario *Reaccion::getAutor() const
+{
+    return autor;
+}
+
+void Reaccion::setAutor(Usuario *autor)
+{
+    this->autor = autor;
 }

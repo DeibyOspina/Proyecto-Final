@@ -1,6 +1,7 @@
 #include <iostream>
 #include <iomanip>
 #include <string>
+
 #include "../utils/utils.cpp"
 #include "./NotasView.cpp"
 #include "../controller/ProyectoController.cpp"
@@ -113,6 +114,7 @@ void ProyectoView::showEditProyecto()
         return;
     }
 
+    Utils::clearScreen();
     int opcion = 0;
     do
     {

@@ -4,13 +4,43 @@ using namespace std;
 class EstadosTarea
 {
 public:
-    static string PENDIENTE;
-    static string EN_PROCESO;
-    static string TERMINADA;
-    static string CANCELADA;
+    static string NOT_STARTED;
+    static string IN_PROCESS;
+    static string FINISHED;
+    static string CANCELED;
+
+    static void showEstados();
+    static string selectEstado(int index);
 };
 
-string EstadosTarea::PENDIENTE = "Pendiente";
-string EstadosTarea::EN_PROCESO = "En proceso";
-string EstadosTarea::TERMINADA = "Terminada";
-string EstadosTarea::CANCELADA = "Cancelada";
+string EstadosTarea::NOT_STARTED = "\033[31mNo iniciado \033[0m";
+string EstadosTarea::IN_PROCESS = "\033[33mEn proceso \033[0m";
+string EstadosTarea::FINISHED = "\033[32mTerminado \033[0m";
+string EstadosTarea::CANCELED = "\033[94mCancelado \033[0m";
+
+void EstadosTarea::showEstados()
+{
+    cout << "---- " << "Estados Tarea" << " ----" << endl;
+    cout << "1. " << NOT_STARTED << endl;
+    cout << "2. " << IN_PROCESS << endl;
+    cout << "3. " << FINISHED << endl;
+    cout << "4. " << CANCELED << endl;
+    cout << "--------------------------" << endl;
+}
+
+string EstadosTarea::selectEstado(int index)
+{
+    switch (index)
+    {
+    case 1:
+        return NOT_STARTED;
+    case 2:
+        return IN_PROCESS;
+    case 3:
+        return FINISHED;
+    case 4:
+        return CANCELED;
+    default:
+        return "";
+    }
+}
