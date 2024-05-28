@@ -64,8 +64,9 @@ void UsuarioView::showRegister()
 
     do
     {
+        cin.ignore();
         cout << "Ingrese su nombre: ";
-        nombre = Utils::getLine(nombre);
+        getline(cin, nombre);
     } while (nombre.empty());
 }
 
