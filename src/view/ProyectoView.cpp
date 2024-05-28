@@ -191,143 +191,49 @@ void ProyectoView::showProyectos(vector<Proyecto *> *proyectos)
     }
 }
 
-void TareaView::menuTarea()
+void ProyectoView::showMenuListProyecto()
 {
-    int opcion = 0;
+    int opcion;
+    bool sorted = true;
     do
     {
-        try
+        cout << "1. Mostrar proyectos" << endl;
+        cout << "2. Mostrar proyectos ordenados por fecha de creacion" << endl;
+        cout << "3. Salir" << endl;
+        cout << "Ingrese una opcion: ";
+        cin >> opcion;
+        Utils::clearScreen();
+
+        switch (opcion)
         {
-            cout << "-------------------------------------------------" << endl;
-            cout << "1. Mostrar tareas. " << endl;
-            cout << "2. Crear Tarea. " << endl;
-            cout << "3. Crear Tareas Con CSV. " << endl;
-            cout << "4. Editar Tareas. " << endl;
-            cout << "5. Exportar mis Tareas a CSV. " << endl;
-            cout << "6. Salir. " << endl;
-             cout << "Ingrese una opción: ";
-            cout << "-------------------------------------------------" << endl;
-            cin >> opcion;
-            cin.ignore(); 
-
-            Utils::clearScreen();
-
-            switch (opcion)
-            {
-            case 1:
-            {
-                int option;
-                cout << "-------------------------------------------------" << endl;
-                cout << "1. Mostrar Todas las tareas. " << endl;
-                cout << "2. Mostrar Tareas Por Responsable. " << endl;
-                cout << "3. Salir. " << endl;
-                cout << "Ingrese una opción: " << endl;
-                cout << "--------------------------------------------------" << endl;
-                cin >> option;
-                cin.ignore();
-                if (option == 1)
-                {
-                    set<Tarea *> tareas = usuarioController.getLoggedUser()->getResponsable()->getTareas();
-                    showTarea(tareas);
-                }
-                else if (option == 2)
-                {
-                    string nombreResponsable;
-                    cout << "Ingrese el nombre del responsable: ";
-                    getline(cin, nombreResponsable);
-                    Responsable *responsable = usuarioController.getResponsable(nombreResponsable);
-                    if (responsable)
-                    {
-                        showTarea(responsable->getTareas());
-                    }
-                    else
-                    {
-                        cout << "Responsable no encontrado" << endl;
-                    }
-                }
-                else if (option == 3)
-                {
-                    cout << "Saliendo..." << endl;
-                }
-                else
-                {
-                    cout << "Opción inválida" << endl;
-                }
-                break;
-            }
-            case 2:
-            {
-                string nombre, fechaLimite, estado, prioridad, comentario;
-                cout << "--------------------------------------------------" << endl;
-                cout << "Ingrese el nombre de la tarea: ";
-                cout << "--------------------------------------------------" << endl;
-                getline(cin, nombre);
-
-                cout << "Ingrese la fecha límite de la tarea: ";
-                getline(cin, fechaLimite);
-
-                cout << "Ingrese el estado de la tarea: ";
-                getline(cin, estado);
-
-                cout << "Ingrese la prioridad de la tarea: ";
-                getline(cin, prioridad);
-
-                cout << "Ingrese algún comentario para la tarea: ";
-                getline(cin, comentario);
-
-                tareaController.crearTarea(nombre, fechaLimite, estado, prioridad, comentario);
-                break;
-            }
-            case 3:
-                menuUploadCSV();
-                break;
-            case 4:
-            {
-                string nombre, nuevoNombre, fechaLimite, estado, prioridad, comentario;
-                cout << "--------------------------------------------------" << endl;
-                cout << "Ingrese el nombre de la tarea a editar: ";
-                cout << "--------------------------------------------------" << endl;
-                getline(cin, nombre);
-
-                Tarea *tarea = tareaController.findTareaByNombre(nombre);
-                if (tarea == nullptr)
-                {
-                    cout << "Tarea no encontrada" << endl;
-                    break;
-                }
-
-                cout << "Ingrese el nuevo nombre de la tarea: ";
-                getline(cin, nuevoNombre);
-
-                cout << "Ingrese la nueva fecha límite de la tarea: ";
-                getline(cin, fechaLimite);
-
-                cout << "Ingrese el nuevo estado de la tarea: ";
-                getline(cin, estado);
-
-                cout << "Ingrese la nueva prioridad de la tarea: ";
-                getline(cin, prioridad);
-
-                cout << "Ingrese un nuevo comentario para la tarea: ";
-                getline(cin, comentario);
-
-                tareaController.editarTarea(tarea, nuevoNombre, fechaLimite, estado, prioridad, comentario);
-                break;
-            }
-            case 5:
-                menuExportCSV();
-                break;
-            case 6:
-                cout << "Saliendo.." << endl;
-                break;
-            default:
-                cout << "Opción inválida" << endl;
-                break;
-            }
+        case 1:
+            showProyectos(proyectoController.listProyectos());
+            break;
+        case 2:
+            showProyectos(proyectoController.sortProyectosByFecha(sorted));
+            sorted = !sorted;
+            break;
+        case 3:
+            break;
+        default:
+            cout << "Opcion no valida" << endl;
+            break;
         }
-        catch (const exception &e)
-        {
-            cerr << e.what() << '\n';
-        }
-    } while (opcion != 6);
+
+    } while (opcion != 3);
+    Utils::clearScreen();
+}
+
+void ProyectoView::menuAddNotaProyecto()
+{
+    showProyectos(proyectoController.listProyectos());
+    cin.ignore();
+    cout << "Seleccione un proyecto: ";
+    getline(cin, nombre);
+
+    auto proyecto = proyectoController.findProyectoByNombre(nombre);
+    if (proyecto != nullptr)
+    {
+        notasView.showFormNotas(proyecto);
+    }
 }
