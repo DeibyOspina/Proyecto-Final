@@ -22,6 +22,8 @@ public:
     void exportTareasToCSV(set<Tarea *> tareas, string pathCSV);
     Tarea *findTareaByNombre(set<Tarea *> tareas, string nombre);
     Tarea *findTareaByNombre(string nombre);
+    Proyecto *crearTarea(string nombre, string fechaLimite, string estado, string prioridad, string comentario);
+    void editarTarea(Tarea *tarea, string nombre, string fechaLimite, string estado, string prioridad, string comentario);
 };
 TareaController::TareaController()
 {
@@ -114,3 +116,31 @@ Tarea *TareaController::findTareaByNombre(string nombre)
     return findTareaByNombre(tareas, nombre);
 }
 
+Proyecto *TareaController::crearTarea(string nombre, string fechaLimite, string estado, string prioridad, string comentario)
+{
+    Proyecto *proyecto = bd->getProyecto();
+    if (proyecto == nullptr)
+    {
+        throw invalid_argument("No ha seleccionado ningún proyecto.");
+    }
+    set<Responsable *> *responsables = new set<Responsable *>{bd->getUsuario()->getResponsable()};
+    Tarea *tarea = new Tarea(nombre, fechaLimite, responsables, estado, prioridad, comentario);
+    proyecto->addTarea(tarea);
+    return proyecto;
+}
+
+void TareaController::editarTarea(Tarea *tarea, string nombre, string fechaLimite, string estado, string prioridad, string comentario)
+{
+    if (tarea == nullptr)
+    {
+        throw invalid_argument("La tarea no existe.");
+    }
+
+    tarea->setNombre(nombre);
+    tarea->setFechaLimite(fechaLimite);
+    tarea->setEstado(estado);
+    tarea->setPrioridad(prioridad);
+    tarea->setComentario(comentario);
+
+    cout << "La tarea ha sido editada exitosamente." << endl;
+}
