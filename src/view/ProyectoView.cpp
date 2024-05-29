@@ -24,7 +24,8 @@ public:
     void showEditProyecto();
     void showMenuListProyecto();
     void showProyectos(vector<Proyecto *> *proyectos);
-    void menuAddNotaProyecto();
+    void menuAddNotaProyecto(Proyecto *proyecto);
+    void menuNotas(Proyecto *proyecto);
 };
 
 ProyectoView::ProyectoView()
@@ -128,7 +129,8 @@ void ProyectoView::showEditProyecto()
         cout << "----- Proyecto seleccionado: " << proyecto->getNombre() << endl;
         cout << "1. Cambiar Estado Proyecto " << endl;
         cout << "2. Editar Datos Proyecto" << endl;
-        cout << "3. Salir" << endl;
+        cout << "3. Notas Proyecto" << endl;
+        cout << "4. Salir" << endl;
         cout << "Ingrese una opcion: ";
         cin >> opcion;
         Utils::clearScreen();
@@ -171,13 +173,15 @@ void ProyectoView::showEditProyecto()
                 cerr << e.what() << '\n';
             }
             break;
-
+        case 3:
+            menuNotas(proyecto);
+            break;
         default:
             cout << "Opcion no valida" << endl;
             break;
         }
 
-    } while (opcion != 3);
+    } while (opcion != 4);
     Utils::clearScreen();
 }
 
@@ -234,16 +238,45 @@ void ProyectoView::showMenuListProyecto()
     Utils::clearScreen();
 }
 
-void ProyectoView::menuAddNotaProyecto()
+void ProyectoView::menuNotas(Proyecto *proyecto)
 {
-    showProyectos(proyectoController.listProyectos());
-    cin.ignore();
-    cout << "Seleccione un proyecto: ";
-    getline(cin, nombre);
-
-    auto proyecto = proyectoController.findProyectoByNombre(nombre);
-    if (proyecto != nullptr)
+    int opcion;
+    string reaccionSelected;
+    do
     {
-        notasView.showFormNotas(proyecto);
+        cout << "1. Agregar Nota" << endl;
+        cout << "2. Agregar Reaccion" << endl;
+        cout << "3. Listar Notas" << endl;
+        cout << "4. Salir" << endl;
+        cout << "Ingrese una opcion: ";
+        cin >> opcion;
+        cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        Utils::clearScreen();
+
+        switch (opcion)
+        {
+        case 1:
+            menuAddNotaProyecto(proyecto);
+            break;
+        case 2:
+            notasView.showFormAddReaccion(proyecto);
+            break;
+        case 3:
+            notasView.showNotas(proyecto->getNotas());
+            break;
+        default:
+            cout << "Opcion no valida" << endl;
+            break;
+        }
+    } while (opcion != 4);
+    Utils::clearScreen();
+}
+
+void ProyectoView::menuAddNotaProyecto(Proyecto *proyecto)
+{
+    auto proyectoIt = proyectoController.findProyectoByNombre(nombre);
+    if (proyectoIt != nullptr)
+    {
+        notasView.showFormNotas(proyectoIt);
     }
 }

@@ -2,7 +2,7 @@
 
 #include <iostream>
 #include <set>
-#include <vector>
+#include <list>
 #include "./Responsable.cpp"
 #include "./Nota.cpp"
 using namespace std;
@@ -21,7 +21,7 @@ private:
     string comentario;
 
     set<Responsable *> *responsables = new set<Responsable *>();
-    set<Nota *> notas = set<Nota *>();
+    list<Nota *> notas = list<Nota *>();
 
 public:
     Tarea(string nombre, string fechaLimite, set<Responsable *> *responsables, string estado, string prioridad, string comentario);
@@ -47,8 +47,8 @@ public:
     string getComentario() const;
     void setComentario(const string &comentario);
 
-    set<Nota *> getNotas() const;
-    void setNotas(const set<Nota *> &notas);
+    list<Nota *> getNotas() const;
+    void setNotas(const list<Nota *> &notas);
 
     void addNota(Nota *nota);
 
@@ -149,17 +149,17 @@ void Tarea::setComentario(const string &comentario)
     this->comentario = comentario;
 }
 
-set<Nota *> Tarea::getNotas() const
+list<Nota *> Tarea::getNotas() const
 {
     return notas;
 }
 
-void Tarea::setNotas(const set<Nota *> &notas)
+void Tarea::setNotas(const list<Nota *> &notas)
 {
     this->notas = notas;
 }
 
 void Tarea::addNota(Nota *nota)
 {
-    notas.insert(nota);
+    notas.push_back(nota);
 }

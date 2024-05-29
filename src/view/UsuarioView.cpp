@@ -159,9 +159,3 @@ void UsuarioView::showMenuDashBoard()
 
     } while (opcion != 3);
 }
-
-int main(int argc, char const *argv[])
-{
-    ProyectoView().showMenuProyecto();
-    return 0;
-}

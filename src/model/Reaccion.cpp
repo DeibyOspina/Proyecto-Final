@@ -15,6 +15,7 @@ private:
 
 public:
     Reaccion();
+    Reaccion(string nombre, Usuario *autor);
 
     string getNombre() const;
     void setNombre(string nombre);
@@ -25,6 +26,12 @@ public:
 
 Reaccion::Reaccion()
 {
+}
+
+Reaccion::Reaccion(string nombre, Usuario *autor)
+{
+    this->nombre = nombre;
+    this->autor = autor;
 }
 
 string Reaccion::getNombre() const
