@@ -27,7 +27,7 @@ public:
     Tarea *findTareaByNombre(set<Tarea *> tareas, string nombre);
     Tarea *findTareaByNombre(string nombre);
 
-    Proyecto *crearTarea(string nombre, string fechaLimite, string estado, string prioridad, string comentario);
+    Tarea *crearTarea(string nombre, string fechaLimite, string estado, string prioridad, string comentario);
     void editarTarea(Tarea *tarea, string nombre, string fechaLimite, string estado, string prioridad, string comentario);
 
     void setProyecto(Proyecto *proyecto);
@@ -109,7 +109,7 @@ void TareaController::exportTareasToCSV(set<Tarea *> tareas, string pathCSV)
     data.push_back(header);
     for_each(tareas.begin(), tareas.end(), [&data](Tarea *tarea)
              {
-        auto it = *tarea->getResponsable()->begin();
+        auto it = *tarea->getResponsables()->begin();
         vector<string> row = {tarea->getNombre(), it->getNombre() , 
         tarea->getFechaLimite(), tarea->getEstado(), tarea->getPrioridad(), tarea->getComentario()};
         data.push_back(row); });
@@ -129,16 +129,15 @@ Tarea *TareaController::findTareaByNombre(string nombre)
     return findTareaByNombre(tareas, nombre);
 }
 
-Proyecto *TareaController::crearTarea(string nombre, string fechaLimite, string estado, string prioridad, string comentario)
+Tarea *TareaController::crearTarea(string nombre, string fechaLimite, string estado, string prioridad, string comentario)
 {
     if (proyecto == nullptr)
     {
         throw invalid_argument("No ha seleccionado ningún proyecto.");
     }
-    set<Responsable *> *responsables = new set<Responsable *>{bd->getUsuario()->getResponsable()};
-    Tarea *tarea = new Tarea(nombre, fechaLimite, responsables, estado, prioridad, comentario);
+    Tarea *tarea = new Tarea(nombre, fechaLimite, estado, prioridad, comentario);
     proyecto->addTarea(tarea);
-    return proyecto;
+    return tarea;
 }
 
 void TareaController::editarTarea(Tarea *tarea, string nombre, string fechaLimite, string estado, string prioridad, string comentario)

@@ -20,12 +20,13 @@ private:
     string prioridad;
     string comentario;
 
-    set<Responsable *> *responsables;
-    set<Nota *> notas;
+    set<Responsable *> *responsables = new set<Responsable *>();
+    set<Nota *> notas = set<Nota *>();
 
 public:
     Tarea(string nombre, string fechaLimite, set<Responsable *> *responsables, string estado, string prioridad, string comentario);
     Tarea(string nombre, string fechaLimite, Responsable *responsable, string estado, string prioridad, string comentario);
+    Tarea(string nombre, string fechaLimite, string estado, string prioridad, string comentario);
 
     string getNombre() const;
     void setNombre(const string &nombre);
@@ -33,7 +34,7 @@ public:
     string getFechaLimite() const;
     void setFechaLimite(const string &fechaLimite);
 
-    set<Responsable *> *getResponsable() const;
+    set<Responsable *> *getResponsables() const;
     void setResponsable(set<Responsable *> *responsables);
     void addResponsable(Responsable *responsable);
 
@@ -74,6 +75,15 @@ Tarea::Tarea(string nombre, string fechaLimite, set<Responsable *> *responsables
     this->comentario = comentario;
 }
 
+Tarea::Tarea(string nombre, string fechaLimite, string estado, string prioridad, string comentario)
+{
+    this->nombre = nombre;
+    this->fechaLimite = fechaLimite;
+    this->estado = estado;
+    this->prioridad = prioridad;
+    this->comentario = comentario;
+}
+
 string Tarea::getNombre() const
 {
     return nombre;
@@ -94,7 +104,7 @@ void Tarea::setFechaLimite(const string &fechaLimite)
     this->fechaLimite = fechaLimite;
 }
 
-set<Responsable *> *Tarea::getResponsable() const
+set<Responsable *> *Tarea::getResponsables() const
 {
     return responsables;
 }

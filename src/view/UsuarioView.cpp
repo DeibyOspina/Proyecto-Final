@@ -8,7 +8,6 @@
 #include "./TareaView.cpp"
 
 using namespace std;
-
 class UsuarioView
 {
 private:
@@ -129,8 +128,17 @@ void UsuarioView::showMenuDashBoard()
         cout << "3. Salir" << endl;
         cout << "-------------------------------------------------" << endl;
 
-        cout << "Ingrese una opción: ";
-        cin >> opcion;
+        do
+        {
+            if (cin.fail())
+            {
+                cin.clear();
+                cin.ignore();
+            }
+            cout << "Ingrese una opción: ";
+            cin >> opcion;
+        } while (cin.fail());
+        cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
         switch (opcion)
         {
@@ -150,4 +158,10 @@ void UsuarioView::showMenuDashBoard()
         }
 
     } while (opcion != 3);
+}
+
+int main(int argc, char const *argv[])
+{
+    ProyectoView().showMenuProyecto();
+    return 0;
 }

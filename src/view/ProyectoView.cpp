@@ -42,8 +42,17 @@ void ProyectoView::showMenuProyecto()
         cout << "2. Editar Proyecto" << endl;
         cout << "3. Listar Proyectos" << endl;
         cout << "4. Salir" << endl;
-        cout << "Ingrese una opcion: ";
-        cin >> opcion;
+        do
+        {
+            if (cin.fail())
+            {
+                cin.clear();
+                cin.ignore();
+            }
+            cout << "Ingrese una opción: ";
+            cin >> opcion;
+        } while (cin.fail());
+        cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         Utils::clearScreen();
 
         switch (opcion)
@@ -73,7 +82,6 @@ void ProyectoView::showCreateProyecto()
     {
         try
         {
-            cin.ignore();
             cout << "------- Crear Proyecto ---------" << endl;
             cout << "Nombre: ";
             getline(cin, nombre);
@@ -103,7 +111,6 @@ void ProyectoView::showEditProyecto()
     cout << "------- Proyectos Disponibles ---------" << endl;
     showProyectos(proyectoController.listProyectos());
 
-    cin.ignore();
     cout << "Seleccione un proyecto: ";
     getline(cin, nombre);
 
@@ -125,6 +132,7 @@ void ProyectoView::showEditProyecto()
         cout << "Ingrese una opcion: ";
         cin >> opcion;
         Utils::clearScreen();
+        cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
         switch (opcion)
         {
@@ -144,12 +152,10 @@ void ProyectoView::showEditProyecto()
         case 2:
             try
             {
-                cin.ignore();
                 cout << "------- Editar Datos Proyecto ---------" << endl;
                 cout << "Descripcion: ";
                 getline(cin, descripcion);
 
-                cin.ignore();
                 cout << "Propietario: ";
                 getline(cin, propietario);
 

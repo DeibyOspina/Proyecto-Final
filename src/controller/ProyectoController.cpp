@@ -56,7 +56,7 @@ bool ProyectoController::editProyecto(Proyecto *proyecto, string descripcion, st
 Proyecto *ProyectoController::findProyectoByNombre(string nombre)
 {
     auto it = find_if(bd->getProyectos()->begin(), bd->getProyectos()->end(), [nombre](Proyecto *proyecto)
-                      { return proyecto->getNombre() == nombre; });
+                      {return proyecto->getNombre() == nombre; });
     return it != bd->getProyectos()->end() ? *it : nullptr;
 }
 
