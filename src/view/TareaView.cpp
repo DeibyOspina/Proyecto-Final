@@ -16,6 +16,8 @@ private:
     TareaController tareaController;
     UsuarioController usuarioController;
     ProyectoController proyectoController;
+    ResponsableController responsableController;
+    NotasView notasView;
 
     string nombre;
     string fechaLimite;
@@ -29,13 +31,18 @@ public:
     void menuUploadCSV();
     void showTarea(Tarea *tarea);
     void showTarea(set<Tarea *> tareas);
+    void showTarea(list<Tarea *> tareas);
     void menuExportCSV();
     void menuTarea();
     void menuNotas();
     void menuListTarea();
     void showFormTarea();
     void showFormEditarTarea();
+    void showMenuEditarTarea();
     void showFormAsignarResponsable(Tarea *tarea);
+    void showFormFindTarea();
+    void showFormFindTareaResponsable();
+    void menuAddNotaTarea(Tarea *tarea);
 };
 TareaView::TareaView() {}
 
@@ -133,6 +140,31 @@ void TareaView::showTarea(set<Tarea *> tareas)
     }
 }
 
+void TareaView::showTarea(list<Tarea *> tareas)
+{
+    cout << setw(15) << left << "Nombre"
+         << setw(15) << left << "Fecha Limite"
+         << setw(15) << left << "Responsable"
+         << setw(15) << left << "Estado"
+         << setw(15) << left << "Prioridad"
+         << setw(15) << left << "Comentario" << endl;
+
+    for (auto tarea : tareas)
+    {
+        string responsables = "";
+        for (auto it = tarea->getResponsables()->begin(); it != tarea->getResponsables()->end(); it++)
+        {
+            responsables += "- " + (*it)->getNombre() + "\n ";
+        }
+        cout << setw(15) << left << tarea->getNombre()
+             << setw(15) << left << tarea->getFechaLimite()
+             << setw(15) << left << responsables
+             << setw(15) << left << tarea->getEstado()
+             << setw(15) << left << tarea->getPrioridad()
+             << setw(15) << left << tarea->getComentario() << endl;
+    }
+}
+
 void TareaView::menuTarea()
 {
     Utils::clearScreen();
@@ -147,7 +179,10 @@ void TareaView::menuTarea()
             cout << "3. Editar Tareas. " << endl;
             cout << "4. Crear Tareas Con CSV. " << endl;
             cout << "5. Exportar mis Tareas a CSV. " << endl;
-            cout << "6. Salir. " << endl;
+            cout << "6. Buscar tarea por nombre " << endl;
+            cout << "7. Buscar tarea por responsable" << endl;
+            cout << "8. Ver Responsables Ordenados por nombre" << endl;
+            cout << "9. Salir. " << endl;
             cout << "Ingrese una opción: ";
             cin >> opcion;
 
@@ -171,6 +206,22 @@ void TareaView::menuTarea()
                 menuExportCSV();
                 break;
             case 6:
+                showFormFindTarea();
+                break;
+            case 7:
+                showFormFindTareaResponsable();
+                break;
+            case 8:
+            {
+                auto responsables = responsableController.sortResponsables();
+                cout << "Responsables: " << endl;
+                for (auto responsable : responsables)
+                {
+                    cout << " " << responsable->getNombre() << endl;
+                }
+            }
+            break;
+            case 9:
                 break;
             default:
                 cout << "Opción inválida" << endl;
@@ -181,19 +232,21 @@ void TareaView::menuTarea()
         {
             cerr << e.what() << '\n';
         }
-    } while (opcion != 6);
+    } while (opcion != 9);
     Utils::clearScreen();
 };
 
 void TareaView::menuListTarea()
 {
     int opcion = 3;
+    bool sort = false;
     do
     {
         cout << "-------------------------------------------------" << endl;
         cout << "1. Mostrar Todas las tareas. " << endl;
-        cout << "2. Mostrar Tareas Por Responsable. " << endl;
-        cout << "3. Salir. " << endl;
+        cout << "2. Mostrar tareas ordenadas por prioridad. " << endl;
+        cout << "3. Mostrar Tareas Por Responsable. " << endl;
+        cout << "4. Salir. " << endl;
         do
         {
             if (cin.fail())
@@ -205,24 +258,31 @@ void TareaView::menuListTarea()
             cin >> opcion;
         } while (cin.fail());
         Utils::clearScreen();
-
         cin.ignore();
+
         switch (opcion)
         {
         case 1:
         {
-            auto usuarios = usuarioController.getUsuarios();
-            for (auto it = usuarios->begin(); it != usuarios->end(); it++)
+            for (auto it = tareaController.getProyectos()->begin(); it != tareaController.getProyectos()->end(); it++)
             {
-                Usuario *usuario = *it;
-                if (!usuario->getResponsable()->getTareas().empty())
-                {
-                    showTarea(usuario->getResponsable()->getTareas());
-                }
+                cout << "Tareas del proyecto: " << (*it)->getNombre() << endl;
+                showTarea((*it)->getTareas());
+                cout << "-----------------------------------" << endl;
             }
         }
         break;
         case 2:
+        {
+            for (auto it = tareaController.getProyectos()->begin(); it != tareaController.getProyectos()->end(); it++)
+            {
+                cout << "Tareas del proyecto  : " << (*it)->getNombre() << " ordenadas de forma " << (sort ? "Ascendente" : "Descendente") << endl;
+                showTarea(tareaController.sortTareasByPrioridad((*it)->getTareas(), sort));
+                cout << "-----------------------------------" << endl;
+            }
+        }
+
+        case 3:
         {
             string nombreResponsable;
             cout << "Ingrese el nombre del responsable: ";
@@ -238,14 +298,14 @@ void TareaView::menuListTarea()
             }
         }
         break;
-        case 3:
+        case 4:
             break;
         default:
             cout << "Opción inválida" << endl;
             break;
         }
 
-    } while (opcion != 3);
+    } while (opcion != 4);
     Utils::clearScreen();
 }
 
@@ -303,6 +363,97 @@ void TareaView::showFormTarea()
     tareaController.setProyecto(nullptr);
 }
 
+void TareaView::menuNotas()
+{
+    int opcion;
+    string nombreProyecto;
+    cout << "Ingrese el nombre del proyecto al cual desea buscar la tarea: ";
+    getline(cin, nombreProyecto);
+    auto proyecto = proyectoController.findProyectoByNombre(nombreProyecto);
+
+    cout << "Ingrese el nombre de la tarea:";
+    getline(cin, nombre);
+    auto tarea = tareaController.findTareaByNombre(proyecto->getTareas(), nombre);
+    if (tarea == nullptr)
+    {
+        cout << "Tarea no encontrada" << endl;
+        return;
+    }
+
+    do
+    {
+        cout << "1. Agregar Nota" << endl;
+        cout << "2. Agregar Reaccion" << endl;
+        cout << "3. Listar Notas" << endl;
+        cout << "4. Salir" << endl;
+        do
+        {
+            if (cin.fail())
+            {
+                cin.clear();
+                cin.ignore();
+            }
+            cout << "Ingrese una opción: ";
+            cin >> opcion;
+        } while (cin.fail());
+        cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        Utils::clearScreen();
+
+        switch (opcion)
+        {
+        case 1:
+            menuAddNotaTarea(tarea);
+            break;
+        case 2:
+            notasView.showFormAddReaccion(tarea);
+            break;
+        case 3:
+            notasView.showNotas(tarea->getNotas());
+            break;
+        default:
+            cout << "Opcion no valida" << endl;
+            break;
+        }
+    } while (opcion != 4);
+    Utils::clearScreen();
+}
+
+void TareaView::showMenuEditarTarea()
+{
+    int opcion = 3;
+    do
+    {
+        cout << "-------------------------------------------------" << endl;
+        cout << "1. Editar Datos . " << endl;
+        cout << "2. Notas Tarea " << endl;
+        cout << "3. Salir. " << endl;
+
+        do
+        {
+            if (cin.fail())
+            {
+                cin.clear();
+                cin.ignore();
+            }
+            cout << "Ingrese una opción: ";
+            cin >> opcion;
+        } while (cin.fail());
+        Utils::clearScreen();
+        cin.ignore();
+
+        switch (opcion)
+        {
+        case 1:
+            showFormEditarTarea();
+            break;
+
+        default:
+            break;
+        }
+
+    } while (opcion != 3);
+}
+
 void TareaView::showFormEditarTarea()
 {
     string nuevoNombre, nombreResponsable;
@@ -338,7 +489,7 @@ void TareaView::showFormEditarTarea()
     }
 
     int index = 0;
-    cout << "Seleccione el estado de la tarea: ";
+    cout << "Seleccione el nuevo estado de la tarea: ";
     EstadosTarea::showEstados();
     while (estado.empty())
     {
@@ -408,4 +559,53 @@ void TareaView::showFormAsignarResponsable(Tarea *tarea)
             cout << "Opción inválida" << endl;
         }
     } while (opcion != 2 || tarea->getResponsables()->empty());
+}
+
+void TareaView::showFormFindTarea()
+{
+    string nombreProyecto;
+    cout << "Ingrese el nombre del proyecto del cual desea agregar la tarea: ";
+    getline(cin, nombreProyecto);
+    auto proyecto = proyectoController.findProyectoByNombre(nombreProyecto);
+
+    if (proyecto == nullptr)
+    {
+        cout << "Proyecto no encontrado" << endl;
+        return;
+    }
+
+    tareaController.setProyecto(proyecto);
+    cout << "Ingrese el nombre de la tarea: ";
+    getline(cin, nombre);
+
+    auto tarea = tareaController.findTareaByNombre(proyecto->getTareas(), nombre);
+    if (tarea == nullptr)
+    {
+        cout << "Tarea no encontrada" << endl;
+        return;
+    }
+    showTarea(tarea);
+    tareaController.setProyecto(nullptr);
+}
+
+void TareaView::showFormFindTareaResponsable()
+{
+    string nombreResponsable;
+    cout << "Ingrese el nombre del responsable: ";
+    getline(cin, nombreResponsable);
+
+    Responsable *responsable = usuarioController.findResponsableByNombre(nombreResponsable);
+    if (responsable == nullptr)
+    {
+        cout << "Responsable no encontrado" << endl;
+        return;
+    }
+
+    auto tarea = tareaController.findTareaByNombre(responsable->getTareas(), nombre);
+    if (tarea == nullptr)
+    {
+        cout << "Tarea no encontrada" << endl;
+        return;
+    }
+    showTarea(tarea);
 }

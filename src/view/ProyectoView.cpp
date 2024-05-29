@@ -26,6 +26,7 @@ public:
     void showProyectos(vector<Proyecto *> *proyectos);
     void menuAddNotaProyecto(Proyecto *proyecto);
     void menuNotas(Proyecto *proyecto);
+    void showMenuTareasProyecto();
 };
 
 ProyectoView::ProyectoView()
@@ -42,7 +43,8 @@ void ProyectoView::showMenuProyecto()
         cout << "1. Crear Proyecto" << endl;
         cout << "2. Editar Proyecto" << endl;
         cout << "3. Listar Proyectos" << endl;
-        cout << "4. Salir" << endl;
+        cout << "4. Buscar Tareas por Proyecto" << endl;
+        cout << "5. Salir" << endl;
         do
         {
             if (cin.fail())
@@ -68,6 +70,9 @@ void ProyectoView::showMenuProyecto()
             showMenuListProyecto();
             break;
         case 4:
+            showMenuTareasProyecto();
+            break;
+        case 5:
             break;
         default:
             cout << "Opcion no valida" << endl;
@@ -202,6 +207,9 @@ void ProyectoView::showProyectos(vector<Proyecto *> *proyectos)
              << setw(15) << left << proyecto->getEstado()
              << setw(15) << left << proyecto->getDescripcion()
              << endl;
+
+        cout << "Notas: " << endl;
+        notasView.showNotas(proyecto->getNotas());
     }
 }
 
@@ -278,5 +286,38 @@ void ProyectoView::menuAddNotaProyecto(Proyecto *proyecto)
     if (proyectoIt != nullptr)
     {
         notasView.showFormNotas(proyectoIt);
+    }
+}
+
+void ProyectoView::showMenuTareasProyecto()
+{
+    string nombreProyecto;
+    cout << "Ingrese el nombre del proyecto: ";
+    cin >> nombreProyecto;
+    auto proyecto = proyectoController.findProyectoByNombre(nombreProyecto);
+    if (proyecto != nullptr)
+    {
+        cout << "Tareas del proyecto: " << proyecto->getNombre() << endl;
+        for (auto tarea : proyecto->getTareas())
+        {
+            string responsablesStr;
+            set<Responsable *> *responsables = tarea->getResponsables();
+            for (auto it = responsables->begin(); it != responsables->end(); it++)
+            {
+                responsablesStr += (*it)->getNombre() + " | ";
+            }
+
+            cout << "Nombre: " << tarea->getNombre() << endl;
+            cout << "Responsables: " << responsablesStr << endl;
+            cout << "Fecha limite: " << tarea->getFechaLimite() << endl;
+            cout << "Estado: " << tarea->getEstado() << endl;
+            cout << "Prioridad: " << tarea->getPrioridad() << endl;
+            cout << "Comentario: " << tarea->getComentario() << endl;
+            cout << "--------------------------------" << endl;
+        }
+    }
+    else
+    {
+        cout << "Proyecto no encontrado" << endl;
     }
 }

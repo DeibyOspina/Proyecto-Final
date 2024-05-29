@@ -23,7 +23,9 @@ public:
     void showNotas(set<Nota *> notas);
     void showNotas(list<Nota *> notas);
     void showFormNotas(Proyecto *proyecto);
+    void showFormNotas(Tarea *tarea);
     void showFormAddReaccion(Proyecto *proyecto);
+    void showFormAddReaccion(Tarea* tarea);
 };
 
 NotasView::NotasView()
@@ -64,6 +66,20 @@ void NotasView::showNotas(list<Nota *> notas)
         showNota(nota);
     }
 }
+
+void NotasView::showFormNotas(Tarea *Tarea)
+{
+    cout << "Titulo: ";
+    getline(cin, titulo);
+
+    cout << "Descripcion: ";
+    getline(cin, descripcion);
+
+    notasController.setTarea(Tarea);
+    notasController.addNotaTarea(titulo, descripcion);
+    notasController.setTarea(nullptr);
+}
+
 
 void NotasView::showFormNotas(Proyecto *proyecto)
 {
@@ -107,6 +123,39 @@ void NotasView::showFormAddReaccion(Proyecto *proyecto)
         }
     }
 
+    nota->addReaccion(new Reaccion(nombreReaccion, BD::getInstance()->getUsuario()));
+    cout << "Reaccion agregada" << endl;
+}
+
+
+void NotasView::showFormAddReaccion(Tarea *tarea)
+{
+    notasController.setTarea(tarea);
+    string nombreNota;
+    cout << "Ingrese el nombre de la nota: ";
+    getline(cin, nombreNota);
+
+    Nota *nota = notasController.findNotaTareaByNombre(nombreNota);
+    if (nota == nullptr)
+    {
+        cout << "Nota no encontrada" << endl;
+        return;
+    }
+
+    int index = 0;
+    string nombreReaccion;
+    Reacciones::showReacciones();
+
+    while (nombreReaccion.empty())
+    {
+        cout << "Seleccione una reaccion: ";
+        cin >> index;
+        nombreReaccion = Reacciones::selectReaccion(index);
+        if (nombreReaccion.empty())
+        {
+            cout << "Reaccion no valida" << endl;
+        }
+    }
     nota->addReaccion(new Reaccion(nombreReaccion, BD::getInstance()->getUsuario()));
     cout << "Reaccion agregada" << endl;
 }

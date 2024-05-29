@@ -1,6 +1,5 @@
 #pragma once
 #include <algorithm>
-#include <queue>
 #include <iostream>
 
 #include "../model/Usuario.cpp"
@@ -16,7 +15,7 @@ private:
 public:
     ResponsableController();
     Responsable *findByNombre(string nombre);
-    queue<Responsable *> *sortResponsables();
+    vector<Responsable *> sortResponsables(bool asc = true);
 };
 
 ResponsableController::ResponsableController()
@@ -32,15 +31,17 @@ Responsable *ResponsableController::findByNombre(string nombre)
     return it != usuarios->end() ? (*it)->getResponsable() : nullptr;
 }
 
-queue<Responsable *> *ResponsableController::sortResponsables()
+vector<Responsable *> ResponsableController::sortResponsables(bool asc)
 {
-    queue<Responsable *> *responsables = new queue<Responsable *>();
+    vector<Responsable *> responsables;
     auto usuarios = bd->getUsuarios();
-    sort(usuarios->begin(), usuarios->end(), [](Usuario *a, Usuario *b)
-         { return a->getResponsable()->getNombre() < b->getResponsable()->getNombre(); });
+    sort(usuarios->begin(), usuarios->end(), [asc](Usuario *a, Usuario *b)
+         { return asc ? a->getResponsable()->getNombre() < b->getResponsable()->getNombre()
+                      : a->getResponsable()->getNombre() > b->getResponsable()->getNombre(); });
+                      
     for (auto usuario : *usuarios)
     {
-        responsables->push(usuario->getResponsable());
+        responsables.push_back(usuario->getResponsable());
     }
     return responsables;
 }

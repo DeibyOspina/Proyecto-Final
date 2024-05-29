@@ -25,12 +25,17 @@ public:
     bool validHeader(vector<string> header);
 
     Tarea *findTareaByNombre(set<Tarea *> tareas, string nombre);
+    Tarea *findTareaByNombre(list<Tarea *> tareas, string nombre);
     Tarea *findTareaByNombre(string nombre);
 
     Tarea *crearTarea(string nombre, string fechaLimite, string estado, string prioridad, string comentario);
     void editarTarea(Tarea *tarea, string nombre, string fechaLimite, string estado, string prioridad, string comentario);
 
     void setProyecto(Proyecto *proyecto);
+    vector<Proyecto *> *getProyectos();
+
+    set<Tarea *> sortTareasByPrioridad(set<Tarea *> tareas, bool asc);
+    list<Tarea *> sortTareasByPrioridad(list<Tarea *> tareas, bool asc);
 };
 
 TareaController::TareaController()
@@ -123,6 +128,13 @@ Tarea *TareaController::findTareaByNombre(set<Tarea *> tareas, string nombre)
     return it != tareas.end() ? *it : nullptr;
 }
 
+Tarea *TareaController::findTareaByNombre(list<Tarea *> tareas, string nombre)
+{
+    auto it = find_if(tareas.begin(), tareas.end(), [nombre](Tarea *tarea)
+                      { return tarea->getNombre() == nombre; });
+    return it != tareas.end() ? *it : nullptr;
+}
+
 Tarea *TareaController::findTareaByNombre(string nombre)
 {
     set<Tarea *> tareas = bd->getUsuario()->getResponsable()->getTareas();
@@ -154,4 +166,23 @@ void TareaController::editarTarea(Tarea *tarea, string nombre, string fechaLimit
     tarea->setComentario(comentario);
 
     cout << "La tarea ha sido editada exitosamente." << endl;
+}
+
+vector<Proyecto *> *TareaController::getProyectos()
+{
+    return bd->getProyectos();
+}
+
+set<Tarea *> TareaController::sortTareasByPrioridad(set<Tarea *> tareas, bool asc)
+{
+    sort(tareas.begin(), tareas.end(), [asc](Tarea *t1, Tarea *t2)
+         { return asc ? t1->getPrioridad() < t2->getPrioridad() : t1->getPrioridad() > t2->getPrioridad(); });
+    return tareas;
+}
+
+list<Tarea *> TareaController::sortTareasByPrioridad(list<Tarea *> tareas, bool asc)
+{
+    sort(tareas.begin(), tareas.end(), [asc](Tarea *t1, Tarea *t2)
+         { return asc ? t1->getPrioridad() < t2->getPrioridad() : t1->getPrioridad() > t2->getPrioridad(); });
+    return tareas;
 }
