@@ -35,7 +35,7 @@ public:
     void setFechaLimite(const string &fechaLimite);
 
     set<Responsable *> *getResponsables() const;
-    void setResponsable(set<Responsable *> *responsables);
+    void setResponsables(set<Responsable *> *responsables);
     void addResponsable(Responsable *responsable);
 
     string getEstado() const;
@@ -109,7 +109,7 @@ set<Responsable *> *Tarea::getResponsables() const
     return responsables;
 }
 
-void Tarea::setResponsable(set<Responsable *> *responsables)
+void Tarea::setResponsables(set<Responsable *> *responsables)
 {
     this->responsables = responsables;
 }

@@ -1,7 +1,13 @@
 #pragma once
 
 #include <iostream>
+#include <chrono>
+#include <ctime>
+#include <sstream>
+#include <iomanip>
+#include <vector>
 #include <set>
+
 #include "../model/BD.cpp"
 #include "../model/Tarea.cpp"
 #include "../utils/utils.cpp"
@@ -36,6 +42,8 @@ public:
 
     set<Tarea *> sortTareasByPrioridad(set<Tarea *> tareas, bool asc);
     list<Tarea *> sortTareasByPrioridad(list<Tarea *> tareas, bool asc);
+
+    list<Tarea *> createRecurrentTareas(Tarea *tarea, int periodicidadDias, string fechaLimite);
 };
 
 TareaController::TareaController()
@@ -185,4 +193,23 @@ list<Tarea *> TareaController::sortTareasByPrioridad(list<Tarea *> tareas, bool 
     sort(tareas.begin(), tareas.end(), [asc](Tarea *t1, Tarea *t2)
          { return asc ? t1->getPrioridad() < t2->getPrioridad() : t1->getPrioridad() > t2->getPrioridad(); });
     return tareas;
+}
+
+list<Tarea *> TareaController::createRecurrentTareas(Tarea *tarea, int periodicidadDias, string fechaLimiteStr)
+{
+    list<Tarea *> tareasRecurrentes;
+    int periodicidad = periodicidadDias * Utils::SEGUNDOS_POR_DIA;
+    time_t fechaInicio = time(nullptr) + periodicidad;
+    time_t fechaLimite = Utils::parseDate(fechaLimiteStr);
+
+    while (fechaInicio < fechaLimite)
+    {
+        Tarea *tarea = new Tarea(tarea->getNombre(), Utils::parseDate(fechaInicio),
+                                 EstadosTarea::NOT_STARTED, tarea->getPrioridad(),
+                                 tarea->getComentario());
+        tarea->setResponsables(tarea->getResponsables());
+        tareasRecurrentes.push_back(tarea);
+        fechaInicio += periodicidad;
+    }
+    return tareasRecurrentes;
 }

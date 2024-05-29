@@ -42,7 +42,7 @@ public:
     void showFormAsignarResponsable(Tarea *tarea);
     void showFormFindTarea();
     void showFormFindTareaResponsable();
-    void menuAddNotaTarea(Tarea *tarea);
+    void showFormRecurrentTarea(Tarea *tarea);
 };
 TareaView::TareaView() {}
 
@@ -402,7 +402,7 @@ void TareaView::menuNotas()
         switch (opcion)
         {
         case 1:
-            menuAddNotaTarea(tarea);
+            notasView.showFormNotas(tarea);
             break;
         case 2:
             notasView.showFormAddReaccion(tarea);
@@ -446,7 +446,9 @@ void TareaView::showMenuEditarTarea()
         case 1:
             showFormEditarTarea();
             break;
-
+        case 2:
+            menuNotas();
+            break;
         default:
             break;
         }
@@ -510,6 +512,13 @@ void TareaView::showFormEditarTarea()
     getline(cin, comentario);
 
     tareaController.editarTarea(tarea, nuevoNombre, fechaLimite, estado, prioridad, comentario);
+
+    cout << "Desea que esta tarea se programe de forma recurrente? (1. Si, 2. No): ";
+    cin >> index;
+    if (index == 1)
+    {
+        showFormRecurrentTarea(tarea);
+    }
 }
 
 void TareaView::showFormAsignarResponsable(Tarea *tarea)
@@ -608,4 +617,31 @@ void TareaView::showFormFindTareaResponsable()
         return;
     }
     showTarea(tarea);
+}
+
+void TareaView::showFormRecurrentTarea(Tarea *tarea)
+{
+    int periodicidadDias;
+    string fechaLimite;
+
+    while (!Utils::isDate(fechaLimite))
+    {
+        cout << "Ingrese la fecha límite de la tarea (DD/MM/YYY): ";
+        getline(cin, fechaLimite);
+    }
+
+    do
+    {
+        if (cin.fail())
+        {
+            cin.clear();
+            cin.ignore();
+        }
+        cout << "Ingrese la periodicidad en días: ";
+        cin >> periodicidadDias;
+    } while (cin.fail());
+
+    auto tareas = tareaController.createRecurrentTareas(tarea, periodicidadDias, fechaLimite);
+    cout << "Tareas creadas exitosamente" << endl;
+    showTarea(tareas);
 }

@@ -13,12 +13,14 @@ class Utils
 {
 public:
     Utils();
+    static const int SEGUNDOS_POR_DIA = 86400;
     static string toLowerCase(string &text);
     static bool isDate(string &date);
     static string getLine(string &line);
-    static auto cinIgnore();
     static void clearScreen();
     static string getCurrentDate();
+    static string parseDate(time_t date);
+    static time_t parseDate(string date);
 };
 
 Utils::Utils()
@@ -45,13 +47,26 @@ bool Utils::isDate(string &date)
 
 void Utils::clearScreen()
 {
-    cout << "\033[2J\033[1;1H";
+    cout << "\033[2J\033[1;1H"; //Codigo ANSI para limpiar la pantalla
 }
 
 string Utils::getCurrentDate()
 {
     auto t = time(nullptr);
+    return parseDate(t);
+}
+
+string Utils::parseDate(time_t date)
+{
     ostringstream oss;
-    oss << put_time(localtime(&t), "%d/%m/%Y %H:%M:%S");
+    oss << put_time(localtime(&date), "%d/%m/%Y");
     return oss.str();
+}
+
+time_t Utils::parseDate(string date)
+{
+    tm tm = {};
+    istringstream ss(date);
+    ss >> get_time(&tm, "%d/%m/%Y");
+    return mktime(&tm);
 }
