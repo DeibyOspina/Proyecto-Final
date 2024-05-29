@@ -43,7 +43,6 @@ BD::BD()
     proyectos = new vector<Proyecto *>();
     proyectos->push_back(new Proyecto("Proyecto 1", "Proyecto de prueba 1", "Daniel"));
 
-
     usuarios = new vector<Usuario *>();
     usuarios->push_back(new Usuario("admin", "admin", new Responsable("Daniel")));
     usuarios->push_back(new Usuario("user1", "password1", new Responsable("User 1")));
@@ -52,8 +51,7 @@ BD::BD()
     usuarios->push_back(new Usuario("user4", "password4", new Responsable("User 4")));
     usuarios->push_back(new Usuario("user5", "password5", new Responsable("User 5")));
 
-
-    usuario = nullptr;
+    this->usuario = usuarios->begin()[0];
 }
 
 BD::~BD()

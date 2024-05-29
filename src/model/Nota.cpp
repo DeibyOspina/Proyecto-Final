@@ -1,7 +1,7 @@
 #pragma once
 
 #include <iostream>
-#include <queue>
+#include <vector>
 #include "./Usuario.cpp"
 #include "./Reaccion.cpp"
 using namespace std;
@@ -16,7 +16,7 @@ private:
     string descripcion;
 
     Usuario *autor;
-    queue<Reaccion *> reacciones;
+    vector<Reaccion *> reacciones;
 
 
 public:
@@ -32,8 +32,10 @@ public:
     Usuario *getAutor() const;
     void setAutor(Usuario *autor);
 
-    queue<Reaccion *> getReacciones() const;
+    vector<Reaccion *> getReacciones() const;
+    void addReaccion(Reaccion *reaccion);
     string convertReaccionesToString() const;
+
 };
 Nota::Nota() {}
 
@@ -74,20 +76,22 @@ void Nota::setAutor(Usuario *autor)
     this->autor = autor;
 }
 
-queue<Reaccion *> Nota::getReacciones() const
+vector<Reaccion *> Nota::getReacciones() const
 {
     return reacciones;
+}
+
+void Nota::addReaccion(Reaccion *reaccion)
+{
+    reacciones.push_back(reaccion);
 }
 
 string Nota::convertReaccionesToString() const
 {
     string reaccionesString = "";
-    queue<Reaccion *> reaccionesTmp = reacciones;
-    while (!reaccionesTmp.empty())
+    for (Reaccion *reaccion : reacciones)
     {
-        Reaccion *reaccion = reaccionesTmp.front();
-        reaccionesString += reaccion->getNombre() + " | ";
-        reaccionesTmp.pop();
+        reaccionesString += reaccion->getNombre() + " - ";
     }
     return reaccionesString;
 }

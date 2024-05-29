@@ -162,6 +162,6 @@ void UsuarioView::showMenuDashBoard()
 
 int main(int argc, char const *argv[])
 {
-    ProyectoView().showMenuProyecto();
+    ProyectoView().showEditProyecto();
     return 0;
 }
