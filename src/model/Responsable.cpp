@@ -11,13 +11,13 @@ class Responsable
 {
 private:
     string nombre;
-    set<Tarea*> tareas;
+    vector<Tarea*> tareas;
 
 public:
     Responsable(string nombre);
     
-    set<Tarea*> getTareas();
-    void setTareas(set<Tarea*> tareas);
+    vector<Tarea*> getTareas();
+    void setTareas(vector<Tarea*> tareas);
     void addTarea(Tarea* tarea);
 
     void setNombre(string nombre);
@@ -33,19 +33,19 @@ void Responsable::setNombre(string nombre)
     this->nombre = nombre;
 }
 
-set<Tarea*> Responsable::getTareas()
+vector<Tarea*> Responsable::getTareas()
 {
     return this->tareas;
 }
 
-void Responsable::setTareas(set<Tarea*> tareas)
+void Responsable::setTareas(vector<Tarea*> tareas)
 {
     this->tareas = tareas;
 }
 
 void Responsable::addTarea(Tarea* tarea)
 {
-    tareas.insert(tarea);
+    tareas.push_back(tarea);
 }
 
 string Responsable::getNombre()

@@ -40,17 +40,16 @@ BD *BD::instance = nullptr;
 BD::BD()
 {
 
-    proyectos = new vector<Proyecto *>();
-    proyectos->push_back(new Proyecto("Proyecto 1", "Proyecto de prueba 1", "Daniel"));
-
     usuarios = new vector<Usuario *>();
     usuarios->push_back(new Usuario("admin", "admin", new Responsable("Daniel")));
-    usuarios->push_back(new Usuario("user1", "password1", new Responsable("User 1")));
-    usuarios->push_back(new Usuario("user2", "password2", new Responsable("User 2")));
-    usuarios->push_back(new Usuario("user3", "password3", new Responsable("User 3")));
-    usuarios->push_back(new Usuario("user4", "password4", new Responsable("User 4")));
-    usuarios->push_back(new Usuario("user5", "password5", new Responsable("User 5")));
 
+    proyectos = new vector<Proyecto *>();
+    proyectos->push_back(new Proyecto("Proyecto 1", "Proyecto de prueba 1", "Daniel"));
+    
+    Tarea *tarea1 = new Tarea("Tarea 1", "2021-12-31", "Pendiente", "Alta", "Comentario 1");
+    tarea1->addResponsable(usuarios->begin()[0]->getResponsable());
+    usuarios->begin()[0]->getResponsable()->addTarea(tarea1);
+    proyectos->begin()[0]->addTarea(tarea1);
     this->usuario = usuarios->begin()[0];
 }
 

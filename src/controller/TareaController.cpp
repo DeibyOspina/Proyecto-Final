@@ -26,24 +26,22 @@ private:
 
 public:
     TareaController();
-    set<Tarea *> createTareaToCSV(string pathCSV);
-    void exportTareasToCSV(set<Tarea *> tareas, string pathCSV);
+    vector<Tarea *> createTareaToCSV(string pathCSV);
+    void exportTareasToCSV(vector<Tarea *> tareas, string pathCSV);
     bool validHeader(vector<string> header);
 
-    Tarea *findTareaByNombre(set<Tarea *> tareas, string nombre);
-    Tarea *findTareaByNombre(list<Tarea *> tareas, string nombre);
+    Tarea *findTareaByNombre(vector<Tarea *> tareas, string nombre);
     Tarea *findTareaByNombre(string nombre);
 
     Tarea *crearTarea(string nombre, string fechaLimite, string estado, string prioridad, string comentario);
-    void editarTarea(Tarea *tarea, string nombre, string fechaLimite, string estado, string prioridad, string comentario);
+    Tarea *editarTarea(Tarea *tarea, string nombre, string fechaLimite, string estado, string prioridad, string comentario);
 
     void setProyecto(Proyecto *proyecto);
     vector<Proyecto *> *getProyectos();
 
-    set<Tarea *> sortTareasByPrioridad(set<Tarea *> tareas, bool asc);
-    list<Tarea *> sortTareasByPrioridad(list<Tarea *> tareas, bool asc);
+    vector<Tarea *> sortTareasByPrioridad(vector<Tarea *> tareas, bool asc);
 
-    list<Tarea *> createRecurrentTareas(Tarea *tarea, int periodicidadDias, string fechaLimite);
+    vector<Tarea *> createRecurrentTareas(Tarea *tarea, int periodicidadDias, string fechaLimite);
 };
 
 TareaController::TareaController()
@@ -56,25 +54,28 @@ void TareaController::setProyecto(Proyecto *proyecto)
     this->proyecto = proyecto;
 }
 
-set<Tarea *> TareaController::createTareaToCSV(string pathCSV)
+vector<Tarea *> TareaController::createTareaToCSV(string pathCSV)
 {
     FilesController fileController(pathCSV);
     ResponsableController responsableController;
 
     vector<vector<string>> data = fileController.readCSV('\n', ";");
-    set<Tarea *> tareas;
+    vector<Tarea *> tareas;
 
     validHeader(data[0]);
     data.erase(data.begin());
 
+    string nombreResponsable, estado, prioridad;
     for (vector<string> row : data)
     {
-        string nombreResponsable = row[1];
+        nombreResponsable = row[1];
         Responsable *responsable = responsableController.findByNombre(nombreResponsable);
         if (responsable != nullptr && row.size() <= 7)
         {
-            Tarea *tarea = new Tarea(row[0], row[2], responsable, row[3], row[4], row[5]);
-            tareas.insert(tarea);
+            estado = EstadosTarea::selectEstado(row[3]);
+            prioridad = PrioridadesTarea::selectPrioridad(row[4]);
+            Tarea *tarea = new Tarea(row[0], row[2], responsable, estado, prioridad, row[5]);
+            tareas.push_back(tarea);
             responsable->addTarea(tarea);
         }
         else
@@ -114,7 +115,7 @@ bool TareaController::validHeader(vector<string> header)
     return true;
 }
 
-void TareaController::exportTareasToCSV(set<Tarea *> tareas, string pathCSV)
+void TareaController::exportTareasToCSV(vector<Tarea *> tareas, string pathCSV)
 {
     FilesController fileController(pathCSV + "/tareas.csv", true);
     vector<vector<string>> data;
@@ -124,19 +125,13 @@ void TareaController::exportTareasToCSV(set<Tarea *> tareas, string pathCSV)
              {
         auto it = *tarea->getResponsables()->begin();
         vector<string> row = {tarea->getNombre(), it->getNombre() , 
-        tarea->getFechaLimite(), tarea->getEstado(), tarea->getPrioridad(), tarea->getComentario()};
+        tarea->getFechaLimite(), EstadosTarea::selectEstadoRoot(tarea->getEstado()),
+         PrioridadesTarea::selectPrioridadRoot(tarea->getPrioridad()), tarea->getComentario()};
         data.push_back(row); });
     fileController.writeCSV(data, '\n', ";");
 }
 
-Tarea *TareaController::findTareaByNombre(set<Tarea *> tareas, string nombre)
-{
-    auto it = find_if(tareas.begin(), tareas.end(), [nombre](Tarea *tarea)
-                      { return tarea->getNombre() == nombre; });
-    return it != tareas.end() ? *it : nullptr;
-}
-
-Tarea *TareaController::findTareaByNombre(list<Tarea *> tareas, string nombre)
+Tarea *TareaController::findTareaByNombre(vector<Tarea *> tareas, string nombre)
 {
     auto it = find_if(tareas.begin(), tareas.end(), [nombre](Tarea *tarea)
                       { return tarea->getNombre() == nombre; });
@@ -145,7 +140,7 @@ Tarea *TareaController::findTareaByNombre(list<Tarea *> tareas, string nombre)
 
 Tarea *TareaController::findTareaByNombre(string nombre)
 {
-    set<Tarea *> tareas = bd->getUsuario()->getResponsable()->getTareas();
+    vector<Tarea *> tareas = bd->getUsuario()->getResponsable()->getTareas();
     return findTareaByNombre(tareas, nombre);
 }
 
@@ -160,7 +155,7 @@ Tarea *TareaController::crearTarea(string nombre, string fechaLimite, string est
     return tarea;
 }
 
-void TareaController::editarTarea(Tarea *tarea, string nombre, string fechaLimite, string estado, string prioridad, string comentario)
+Tarea *TareaController::editarTarea(Tarea *tarea, string nombre, string fechaLimite, string estado, string prioridad, string comentario)
 {
     if (tarea == nullptr)
     {
@@ -172,8 +167,8 @@ void TareaController::editarTarea(Tarea *tarea, string nombre, string fechaLimit
     tarea->setEstado(estado);
     tarea->setPrioridad(prioridad);
     tarea->setComentario(comentario);
-
     cout << "La tarea ha sido editada exitosamente." << endl;
+    return tarea;
 }
 
 vector<Proyecto *> *TareaController::getProyectos()
@@ -181,34 +176,27 @@ vector<Proyecto *> *TareaController::getProyectos()
     return bd->getProyectos();
 }
 
-set<Tarea *> TareaController::sortTareasByPrioridad(set<Tarea *> tareas, bool asc)
+vector<Tarea *> TareaController::sortTareasByPrioridad(vector<Tarea *> tareas, bool asc)
 {
     sort(tareas.begin(), tareas.end(), [asc](Tarea *t1, Tarea *t2)
          { return asc ? t1->getPrioridad() < t2->getPrioridad() : t1->getPrioridad() > t2->getPrioridad(); });
     return tareas;
 }
 
-list<Tarea *> TareaController::sortTareasByPrioridad(list<Tarea *> tareas, bool asc)
+vector<Tarea *> TareaController::createRecurrentTareas(Tarea *tarea, int periodicidadDias, string fechaLimiteStr)
 {
-    sort(tareas.begin(), tareas.end(), [asc](Tarea *t1, Tarea *t2)
-         { return asc ? t1->getPrioridad() < t2->getPrioridad() : t1->getPrioridad() > t2->getPrioridad(); });
-    return tareas;
-}
-
-list<Tarea *> TareaController::createRecurrentTareas(Tarea *tarea, int periodicidadDias, string fechaLimiteStr)
-{
-    list<Tarea *> tareasRecurrentes;
+    vector<Tarea *> tareasRecurrentes;
     int periodicidad = periodicidadDias * Utils::SEGUNDOS_POR_DIA;
     time_t fechaInicio = time(nullptr) + periodicidad;
     time_t fechaLimite = Utils::parseDate(fechaLimiteStr);
 
     while (fechaInicio < fechaLimite)
     {
-        Tarea *tarea = new Tarea(tarea->getNombre(), Utils::parseDate(fechaInicio),
-                                 EstadosTarea::NOT_STARTED, tarea->getPrioridad(),
-                                 tarea->getComentario());
-        tarea->setResponsables(tarea->getResponsables());
-        tareasRecurrentes.push_back(tarea);
+        Tarea *tareaRecurrente = new Tarea(tarea->getNombre(), Utils::parseDate(fechaInicio),
+                                           EstadosTarea::NOT_STARTED, tarea->getPrioridad(),
+                                           tarea->getComentario());
+        tareaRecurrente->setResponsables(tarea->getResponsables());
+        tareasRecurrentes.push_back(tareaRecurrente);
         fechaInicio += periodicidad;
     }
     return tareasRecurrentes;

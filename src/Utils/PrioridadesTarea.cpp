@@ -10,6 +10,8 @@ public:
 
     static void showPrioridades();
     static string selectPrioridad(int index);
+    static string selectPrioridad(string prioridad);
+    static string selectPrioridadRoot(string prioridad);
 };
 
 string PrioridadesTarea::HIGH = "\033[31mAlta \033[0m";
@@ -37,5 +39,46 @@ string PrioridadesTarea::selectPrioridad(int index)
         return LOW;
     default:
         return "";
+    }
+}
+
+string PrioridadesTarea::selectPrioridad(string prioridad)
+{
+    prioridad = Utils::toLowerCase(prioridad);
+    if (prioridad == "alta")
+    {
+        return HIGH;
+    }
+    else if (prioridad == "media")
+    {
+        return MEDIUM;
+    }
+    else if (prioridad == "baja")
+    {
+        return LOW;
+    }
+    else
+    {
+        return LOW;
+    }
+}
+
+string PrioridadesTarea::selectPrioridadRoot(string prioridad)
+{
+    if (prioridad == HIGH)
+    {
+        return "Alta";
+    }
+    else if (prioridad == MEDIUM)
+    {
+        return "Media";
+    }
+    else if (prioridad == LOW)
+    {
+        return "Baja";
+    }
+    else
+    {
+        return "Baja";
     }
 }

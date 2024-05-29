@@ -15,7 +15,7 @@ private:
     string estado;
     string fecha;
 
-    list<Tarea *> tareas;
+    vector<Tarea *> tareas;
     list<Nota *> notas;
 
 public:
@@ -41,7 +41,7 @@ public:
     void addNota(Nota *nota);
 
     void addTarea(Tarea *tarea);
-    list<Tarea *> getTareas() const;
+    vector<Tarea *> getTareas() const;
 };
 
 Proyecto::Proyecto(string nombre, string descripcion, string propietario, string estado)
@@ -124,7 +124,7 @@ void Proyecto::addTarea(Tarea *tarea)
     tareas.push_back(tarea);
 }
 
-list<Tarea *> Proyecto::getTareas() const
+vector<Tarea *> Proyecto::getTareas() const
 {
     return tareas;
 }

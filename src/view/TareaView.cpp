@@ -28,10 +28,10 @@ private:
 public:
     TareaView();
 
+    void clear();
     void menuUploadCSV();
     void showTarea(Tarea *tarea);
-    void showTarea(set<Tarea *> tareas);
-    void showTarea(list<Tarea *> tareas);
+    void showTarea(vector<Tarea *> tareas);
     void menuExportCSV();
     void menuTarea();
     void menuNotas();
@@ -45,6 +45,15 @@ public:
     void showFormRecurrentTarea(Tarea *tarea);
 };
 TareaView::TareaView() {}
+
+void TareaView::clear()
+{
+    nombre = "";
+    fechaLimite = "";
+    estado = "";
+    prioridad = "";
+    comentario = "";
+}
 
 void TareaView::menuUploadCSV()
 {
@@ -97,7 +106,7 @@ void TareaView::showTarea(Tarea *tarea)
     string responsables = "";
     for (auto it = tarea->getResponsables()->begin(); it != tarea->getResponsables()->end(); it++)
     {
-        responsables += "- " + (*it)->getNombre() + "\n ";
+        responsables += (*it)->getNombre() + " - ";
     }
 
     cout << setw(15) << left << "Nombre"
@@ -115,7 +124,7 @@ void TareaView::showTarea(Tarea *tarea)
          << setw(15) << left << tarea->getComentario() << endl;
 }
 
-void TareaView::showTarea(set<Tarea *> tareas)
+void TareaView::showTarea(vector<Tarea *> tareas)
 {
     cout << setw(15) << left << "Nombre"
          << setw(15) << left << "Fecha Limite"
@@ -129,32 +138,7 @@ void TareaView::showTarea(set<Tarea *> tareas)
         string responsables = "";
         for (auto it = tarea->getResponsables()->begin(); it != tarea->getResponsables()->end(); it++)
         {
-            responsables += "- " + (*it)->getNombre() + "\n ";
-        }
-        cout << setw(15) << left << tarea->getNombre()
-             << setw(15) << left << tarea->getFechaLimite()
-             << setw(15) << left << responsables
-             << setw(15) << left << tarea->getEstado()
-             << setw(15) << left << tarea->getPrioridad()
-             << setw(15) << left << tarea->getComentario() << endl;
-    }
-}
-
-void TareaView::showTarea(list<Tarea *> tareas)
-{
-    cout << setw(15) << left << "Nombre"
-         << setw(15) << left << "Fecha Limite"
-         << setw(15) << left << "Responsable"
-         << setw(15) << left << "Estado"
-         << setw(15) << left << "Prioridad"
-         << setw(15) << left << "Comentario" << endl;
-
-    for (auto tarea : tareas)
-    {
-        string responsables = "";
-        for (auto it = tarea->getResponsables()->begin(); it != tarea->getResponsables()->end(); it++)
-        {
-            responsables += "- " + (*it)->getNombre() + "\n ";
+            responsables += (*it)->getNombre() + " - ";
         }
         cout << setw(15) << left << tarea->getNombre()
              << setw(15) << left << tarea->getFechaLimite()
@@ -197,7 +181,7 @@ void TareaView::menuTarea()
                 showFormTarea();
                 break;
             case 3:
-                showFormEditarTarea();
+                showMenuEditarTarea();
                 break;
             case 4:
                 menuUploadCSV();
@@ -281,6 +265,7 @@ void TareaView::menuListTarea()
                 cout << "-----------------------------------" << endl;
             }
         }
+        break;
 
         case 3:
         {
@@ -359,8 +344,14 @@ void TareaView::showFormTarea()
 
     cout << "Tarea creada exitosamente" << endl;
     showTarea(tarea);
-
     tareaController.setProyecto(nullptr);
+
+    cout << "Desea que esta tarea se programe de forma recurrente? (1. Si, 2. No): ";
+    cin >> index;
+    if (index == 1)
+    {
+        showFormRecurrentTarea(tarea);
+    }
 }
 
 void TareaView::menuNotas()
@@ -370,6 +361,11 @@ void TareaView::menuNotas()
     cout << "Ingrese el nombre del proyecto al cual desea buscar la tarea: ";
     getline(cin, nombreProyecto);
     auto proyecto = proyectoController.findProyectoByNombre(nombreProyecto);
+    if (proyecto == nullptr)
+    {
+        cout << "Proyecto no encontrado" << endl;
+        return;
+    }
 
     cout << "Ingrese el nombre de la tarea:";
     getline(cin, nombre);
@@ -458,6 +454,7 @@ void TareaView::showMenuEditarTarea()
 
 void TareaView::showFormEditarTarea()
 {
+    clear();
     string nuevoNombre, nombreResponsable;
     cout << "Ingrese el nombre del responsable de la tarea a editar: ";
     getline(cin, nombreResponsable);
@@ -482,8 +479,6 @@ void TareaView::showFormEditarTarea()
     cout << "Ingrese el nuevo nombre de la tarea: ";
     getline(cin, nuevoNombre);
 
-    cout << "Ingrese la nueva fecha límite de la tarea: ";
-
     while (!Utils::isDate(fechaLimite))
     {
         cout << "Ingrese la fecha límite de la tarea: ";
@@ -491,8 +486,8 @@ void TareaView::showFormEditarTarea()
     }
 
     int index = 0;
-    cout << "Seleccione el nuevo estado de la tarea: ";
     EstadosTarea::showEstados();
+    cout << "Seleccione el nuevo estado de la tarea: ";
     while (estado.empty())
     {
         cin >> index;
@@ -500,23 +495,24 @@ void TareaView::showFormEditarTarea()
     }
 
     index = 0;
-    cout << "Seleccione la prioridad de la tarea: ";
     PrioridadesTarea::showPrioridades();
+    cout << "Seleccione la prioridad de la tarea: ";
     while (prioridad.empty())
     {
         cin >> index;
         prioridad = PrioridadesTarea::selectPrioridad(index);
     }
+    cin.ignore();
 
     cout << "Ingrese un nuevo comentario para la tarea: ";
     getline(cin, comentario);
 
-    tareaController.editarTarea(tarea, nuevoNombre, fechaLimite, estado, prioridad, comentario);
-
+    tarea = tareaController.editarTarea(tarea, nuevoNombre, fechaLimite, estado, prioridad, comentario);
     cout << "Desea que esta tarea se programe de forma recurrente? (1. Si, 2. No): ";
     cin >> index;
     if (index == 1)
     {
+        cin.ignore();
         showFormRecurrentTarea(tarea);
     }
 }
@@ -621,9 +617,8 @@ void TareaView::showFormFindTareaResponsable()
 
 void TareaView::showFormRecurrentTarea(Tarea *tarea)
 {
+    clear();
     int periodicidadDias;
-    string fechaLimite;
-
     while (!Utils::isDate(fechaLimite))
     {
         cout << "Ingrese la fecha límite de la tarea (DD/MM/YYY): ";
